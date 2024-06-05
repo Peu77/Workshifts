@@ -1,12 +1,5 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import React from "react";
-
-interface Shift {
-    id: number,
-    name: string,
-    startTime: Date,
-    endTime: Date,
-}
+import {Shift} from "@/types/Shift.ts";
 
 interface ShiftDayProps {
     name: string,

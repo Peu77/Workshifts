@@ -3,7 +3,9 @@ import {Oval} from "react-loader-spinner";
 import {useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import {useToast} from "@/components/ui/use-toast.ts";
-import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Shift} from "@/types/Shift.ts";
+import {Shifts} from "@/admin/shifts.tsx";
 
 export const Admin = () => {
     const {data, isLoading, isError} = useQuery<{
@@ -51,8 +53,12 @@ export const Admin = () => {
             <Card className="w-1/2">
                 <CardHeader>
                     <CardTitle>Shifts</CardTitle>
-                    <CardDescription>Manage shifts and schedules</CardDescription>
+                    <CardDescription>Manage shifts</CardDescription>
                 </CardHeader>
+
+                <CardContent>
+                    <Shifts/>
+                </CardContent>
             </Card>
 
             <Card className="w-1/2">
