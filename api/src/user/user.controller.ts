@@ -6,10 +6,11 @@ import {LoginDto} from "./dtos/loginDto";
 export class UserController {
     constructor(private readonly userService: UserService) {
     }
+
     @Post("login")
-    async login(@Body() body: LoginDto){
-        const check = this.userService.checkEmailAndPassword(body.email, body.password);
-        if(!check){
+    async login(@Body() body: LoginDto) {
+        const check = await this.userService.checkEmailAndPassword(body.email, body.password);
+        if (!check) {
             throw new UnauthorizedException("Invalid email or password")
         }
 

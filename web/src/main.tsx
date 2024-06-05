@@ -6,21 +6,26 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import "./globals.css"
+import Login from "@/auth/login.tsx";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {Toaster} from "@/components/ui/toaster.tsx";
 
-const Test = () => {
-    return <div>Test</div>
-}
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Test/>
+        element: <Login/>
     },
     {}
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const queryClient = new QueryClient()
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <RouterProvider router={router}/>
+        <QueryClientProvider client={queryClient}>
+            <Toaster/>
+            <RouterProvider router={router}/>
+        </QueryClientProvider>
     </React.StrictMode>
 );
