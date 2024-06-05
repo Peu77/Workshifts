@@ -7,7 +7,9 @@ import { ShiftModule } from './shift/shift.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({}),
+    imports: [ConfigModule.forRoot({
+        isGlobal: true
+    }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

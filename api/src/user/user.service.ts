@@ -1,13 +1,30 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
-import {TokenPayload, UserEntity} from "./entities/user.entity";
+import {Injectable} from '@nestjs/common';
+import {TokenPayload, UserEntity, UserRole} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {compareSync} from "bcrypt";
+import {compareSync, genSaltSync, hashSync} from "bcrypt";
 import {JwtService} from "@nestjs/jwt";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>, private jwtService: JwtService) {
+    constructor(
+        @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+        private jwtService: JwtService,
+        private configService: ConfigService
+    ) {
+        (async () => {
+            const adminEmail = configService.getOrThrow<string>("ADMIN_EMAIL");
+            let adminUser = await this.getUserByEmail(adminEmail);
+            if (!adminUser) {
+                adminUser = new UserEntity();
+                adminUser.email = adminEmail
+                adminUser.name = "admin"
+                adminUser.role = UserRole.ADMIN
+                adminUser.password = hashSync(configService.getOrThrow<string>("ADMIN_PASSWORD"), genSaltSync(10));
+                await this.userRepository.save(adminUser);
+            }
+        })()
     }
 
     async checkEmailAndPassword(email: string, password: string): Promise<boolean> {

@@ -8,13 +8,17 @@ export class UserController {
     }
 
     @Post("login")
-    async login(@Body() body: LoginDto) {
+    async login(@Body() body: LoginDto): Promise<{
+        token: string
+    }> {
         const check = await this.userService.checkEmailAndPassword(body.email, body.password);
         if (!check) {
             throw new UnauthorizedException("Invalid email or password")
         }
 
         const user = await this.userService.getUserByEmail(body.email);
-        return this.userService.createJwtToken(user);
+        return {
+            token: await this.userService.createJwtToken(user)
+        };
     }
 }

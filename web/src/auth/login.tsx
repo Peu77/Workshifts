@@ -16,9 +16,6 @@ import api from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
 
 const formSchema = z.object({
-    username: z.string().min(3, {
-        message: "Username must be at least 3 characters.",
-    }),
     email: z.string().email(),
     password: z.string().min(8, {
         message: "Password must be at least 8 characters.",
@@ -32,7 +29,11 @@ const Login = () => {
     const {toast} = useToast()
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        api.post("/user/login", data).then(() => {
+        api.post<{
+            token: string
+        }>("/user/login", data).then((response) => {
+            localStorage.setItem("token", response.data.token)
+
             toast({
                 title: "Login successful",
                 description: "You have been logged in.",
@@ -56,20 +57,6 @@ const Login = () => {
                             <CardDescription>Sign in to your account</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-2">
-                            <FormField
-                                control={form.control}
-                                name="username"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Username</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="username" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
                             <FormField
                                 control={form.control}
                                 name="email"
