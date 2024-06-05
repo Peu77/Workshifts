@@ -12,7 +12,7 @@ import {UserEntity} from "./entities/user.entity";
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) => ({
       secret: configService.getOrThrow<string>('JWT_SECRET'),
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '7d' },
     }),
   }), TypeOrmModule.forFeature([UserEntity])],
   controllers: [UserController],

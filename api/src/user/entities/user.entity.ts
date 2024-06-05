@@ -1,5 +1,6 @@
 import {Column, PrimaryGeneratedColumn, Entity, ManyToMany} from "typeorm";
 import {ShiftDayEntity} from "../../shift/entities/shiftDay.entity";
+import {Exclude} from "class-transformer";
 
 export enum UserRole {
     ADMIN = "admin",
@@ -17,6 +18,7 @@ export class UserEntity {
     @Column()
     email: string;
 
+    @Exclude()
     @Column()
     password: string;
 

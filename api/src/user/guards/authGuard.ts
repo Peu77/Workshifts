@@ -1,4 +1,4 @@
-import {CanActivate, createParamDecorator, ExecutionContext, UnauthorizedException} from "@nestjs/common";
+import {CanActivate, createParamDecorator, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../user.service";
 
 export const UserParam = createParamDecorator((data: unknown, context: ExecutionContext) => {
@@ -6,10 +6,13 @@ export const UserParam = createParamDecorator((data: unknown, context: Execution
     return request.user;
 })
 
+
+@Injectable()
 export class AuthGuard implements CanActivate {
     constructor(private readonly userService: UserService) {
     }
-    canActivate(context: ExecutionContext): boolean {
+
+  async  canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const tokenHeader = request.headers['authorization'];
         if (!tokenHeader) {
@@ -23,15 +26,17 @@ export class AuthGuard implements CanActivate {
 
         const token = splitToken[1];
         const result = this.userService.checkToken(token);
-        if(!result){
+
+        if (!result) {
             throw new UnauthorizedException("Invalid token");
         }
 
-        const user = this.userService.getUserById(result.id);
-        if(!user){
+        const user = await this.userService.getUserById(result.id);
+        if (!user) {
             throw new UnauthorizedException("Invalid token");
         }
 
         request.user = user;
+        return true;
     }
 }

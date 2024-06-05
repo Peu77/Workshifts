@@ -1,10 +1,27 @@
-import {Body, Controller, Post, UnauthorizedException} from '@nestjs/common';
+import {
+    Body,
+    ClassSerializerInterceptor,
+    Controller,
+    Get,
+    Post,
+    UnauthorizedException,
+    UseGuards, UseInterceptors
+} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {LoginDto} from "./dtos/loginDto";
+import {AuthGuard, UserParam} from "./guards/authGuard";
+import {UserEntity} from "./entities/user.entity";
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {
+    }
+
+    @UseInterceptors(ClassSerializerInterceptor)
+    @UseGuards(AuthGuard)
+    @Get("me")
+    me(@UserParam() user: UserEntity) {
+        return user
     }
 
     @Post("login")

@@ -14,6 +14,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import api from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -27,6 +28,7 @@ const Login = () => {
         resolver: zodResolver(formSchema)
     })
     const {toast} = useToast()
+    const navigate = useNavigate()
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         api.post<{
@@ -38,6 +40,7 @@ const Login = () => {
                 title: "Login successful",
                 description: "You have been logged in.",
             })
+            navigate("/app")
         }).catch((err) => {
             toast({
                 title: "Login failed",
