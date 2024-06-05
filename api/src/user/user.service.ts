@@ -21,7 +21,7 @@ export class UserService {
 
     checkToken(token: string): false | TokenPayload {
         try {
-            return this.jwtService.verify(token);
+            return this.jwtService.verify<TokenPayload>(token);
         } catch (e) {
             return false;
         }
