@@ -4,7 +4,6 @@ import {useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Shift} from "@/types/Shift.ts";
 import {Shifts} from "@/admin/shifts.tsx";
 
 export const Admin = () => {
