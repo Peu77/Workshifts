@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Shifts} from "@/admin/shifts.tsx";
+import {Users} from "@/admin/users";
 
 export const Admin = () => {
     const {data, isLoading, isError} = useQuery<{
@@ -64,6 +65,10 @@ export const Admin = () => {
                 <CardHeader>
                     <CardTitle>Users</CardTitle>
                     <CardDescription>Manage users and roles</CardDescription>
+
+                    <CardContent>
+                        <Users/>
+                    </CardContent>
                 </CardHeader>
             </Card>
 

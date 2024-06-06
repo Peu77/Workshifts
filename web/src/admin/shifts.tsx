@@ -29,7 +29,7 @@ export const Shifts = () => {
                     </TableHeader>
                     <TableBody>
                         {shiftResult.data.map((shift) => (
-                            <ShiftCell {...shift}/>
+                            <ShiftCell key={shift.id} {...shift}/>
                         ))}
                     </TableBody>
                 </Table>

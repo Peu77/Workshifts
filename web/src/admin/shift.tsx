@@ -9,13 +9,13 @@ import {DialogContext} from "@/provider/DialogProvider";
 import {EditShift} from "@/admin/dialog/editShift";
 
 export const ShiftCell = (shift: Shift) => {
-    const removeShiftMutation = useDeleteShift();
+    const deleteShiftMutation = useDeleteShift();
     const {toast} = useToast()
     const {setDialog} = useContext(DialogContext)
 
     function removeShift(id: number) {
-        if (removeShiftMutation.isPending) return
-        removeShiftMutation.mutateAsync(id).then(() => {
+        if (deleteShiftMutation.isPending) return
+        deleteShiftMutation.mutateAsync(id).then(() => {
             toast({
                 title: "Shift Deleted",
                 description: "Shift has been deleted successfully.",
@@ -34,7 +34,7 @@ export const ShiftCell = (shift: Shift) => {
                     <EditIcon onClick={() => setDialog(<EditShift {...shift}/>)}/>
                 </Button>
                 <Button onClick={() => removeShift(shift.id)} size="icon" variant="ghost">
-                    {removeShiftMutation.isPending ? <ColorRing
+                    {deleteShiftMutation.isPending ? <ColorRing
                         visible={true}
                         height="80"
                         width="80"
