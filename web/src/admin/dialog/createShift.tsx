@@ -15,7 +15,7 @@ const formSchema = z.object({
     startTime: z.string().time(),
     endTime: z.string().time(),
     minEmployees: number().min(1)
-})
+}).refine(data => data.endTime > data.startTime)
 
 
 export const CreateShift = () => {

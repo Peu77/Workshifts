@@ -9,7 +9,7 @@ npm install
 ### Create .env file
 
 ```bash
-mv .env.example .env
+mv .env .env
 ```
 
 ### Database
