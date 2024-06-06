@@ -27,7 +27,7 @@ export const Shifts = () => {
                     {shiftResult.data.map((shift) => (
                         <li key={shift.id}>
                             <h3>{shift.name}</h3>
-                            <p>{shift.startTime.toTimeString()} - {shift.endTime.toTimeString()}</p>
+                            <p>{shift.startTime} - {shift.endTime}</p>
                         </li>
                     ))}
                 </ul>

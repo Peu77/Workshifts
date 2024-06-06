@@ -15,7 +15,7 @@ const formSchema = z.object({
     startTime: z.string().time(),
     endTime: z.string().time(),
     minEmployees: number().min(1)
-}).refine(data => data.endTime > data.startTime)
+})
 
 
 export const CreateShift = () => {
@@ -105,7 +105,7 @@ export const CreateShift = () => {
                         <FormField control={form.control} name={"minEmployees"} render={({field}) => {
                             return (
                                 <FormItem>
-                                    <FormLabel>Start</FormLabel>
+                                    <FormLabel>minEmployees</FormLabel>
                                     <FormControl>
                                         <Input onChange={e => {
                                             const parsed = parseInt(e.target.value)
