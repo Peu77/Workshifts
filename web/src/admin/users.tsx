@@ -1,10 +1,10 @@
 import {useGetUsers} from "@/admin/usersApi";
 import {Button} from "@/components/ui/button";
-import {CreateShift} from "@/admin/dialog/createShift";
 import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {DialogContext} from "@/provider/DialogProvider";
 import {useContext} from "react";
 import {UserCell} from "@/admin/user";
+import {CreateUser} from "@/admin/dialog/createUser";
 
 export const Users = () => {
     const users = useGetUsers()
@@ -12,7 +12,7 @@ export const Users = () => {
 
     return (
         <div>
-            <Button className="" onClick={() => setDialog(<CreateShift/>)}>Create user</Button>
+            <Button className="" onClick={() => setDialog(<CreateUser/>)}>Create user</Button>
             {users.isLoading && <p>Loading...</p>}
             {users.isError && <p>Error</p>}
             {users.data && (

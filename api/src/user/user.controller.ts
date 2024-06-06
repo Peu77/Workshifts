@@ -12,6 +12,7 @@ import {LoginDto} from "./dtos/loginDto";
 import {AuthGuard, UserParam} from "./guards/authGuard";
 import {UserEntity} from "./entities/user.entity";
 import {AdminGuard} from "./guards/adminGuard";
+import {UserDto} from "./dtos/userDto";
 
 @Controller('user')
 export class UserController {
@@ -49,5 +50,11 @@ export class UserController {
     @UseGuards(AuthGuard, AdminGuard)
     async delete(@Param("id", ParseIntPipe) id: number) {
         return this.userService.deleteUser(id);
+    }
+
+    @UseGuards(AuthGuard, AdminGuard)
+    @Post("user")
+    async create(@Body() user: UserDto) {
+        return this.userService.createUser(user.name, user.email);
     }
 }

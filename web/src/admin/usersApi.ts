@@ -1,5 +1,7 @@
 import api from "@/api";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+
+const KEY = "users"
 
 export enum UserRole {
     ADMIN = "admin",
@@ -16,7 +18,7 @@ export interface User {
 
 export function useGetUsers() {
     return useQuery<User[]>({
-        queryKey: ["users"],
+        queryKey: [KEY],
         queryFn: async () => {
             const response = await api.get("/user/list")
             return response.data
@@ -24,12 +26,39 @@ export function useGetUsers() {
     })
 }
 
-export function useDeleteUser(){
+export function useDeleteUser() {
+    const queryClient = useQueryClient()
+
     return useMutation({
         mutationKey: ["removeUser"],
         mutationFn: async (id: number) => {
             await api.delete(`/user/${id}`)
             return id
+        },
+        onSuccess: (id) => {
+            queryClient.setQueryData([KEY], (old: User[] | undefined) => {
+                return old ? old.filter(user => user.id !== id) : old
+            })
+        }
+    })
+}
+
+export function useCreateUser() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["createUser"],
+        mutationFn: async (user: {
+            name: string,
+            email: string
+        }) => {
+            const response = await api.post("/user/user", user)
+            return response.data
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([KEY], (old: User[] | undefined) => {
+                return old ? [...old, data] : old
+            })
         }
     })
 }

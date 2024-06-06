@@ -55,12 +55,21 @@ export class UserService {
     getUserList() {
         return this.userRepository.find({
             where: {
-                role: UserRole.ADMIN
+                role: UserRole.USER
             }
         });
     }
 
     deleteUser(id: number) {
         return this.userRepository.delete({id});
+    }
+
+    createUser(name: string, email: string) {
+        const user = new UserEntity();
+        user.name = name;
+        user.email = email;
+        user.role = UserRole.USER;
+        user.password = hashSync("password", genSaltSync(10));
+        return this.userRepository.save(user);
     }
 }
