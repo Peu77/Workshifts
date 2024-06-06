@@ -7,9 +7,8 @@ import {FormControl, FormField, FormItem, Form, FormLabel, FormMessage} from "@/
 import {Input} from "@/components/ui/input.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
-import api from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
-import {ShiftDto, useCreateShift} from "@/admin/shiftsApi";
+import {getFormatedTime, Shift, ShiftDto, useUpdateShift} from "@/admin/shiftsApi";
 
 const formSchema = z.object({
     name: z.string().min(3),
@@ -19,14 +18,20 @@ const formSchema = z.object({
 })
 
 
-export const CreateShift = () => {
+export const EditShift = (shift: Shift) => {
     const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema)
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: shift.name,
+            startTime: getFormatedTime(shift.startTime) + ":00",
+            endTime: getFormatedTime(shift.endTime) + ":00",
+            minEmployees: shift.minEmployees
+        }
     })
 
     const {setDialog} = useContext(DialogContext)
     const {toast} = useToast()
-    const createShiftMutation = useCreateShift();
+    const updateShiftMutation = useUpdateShift();
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         function parseTime(time: string): { hours: number, minutes: number } {
@@ -35,16 +40,17 @@ export const CreateShift = () => {
         }
 
         const dto: ShiftDto = {
+            id: shift.id,
             name: data.name.toString(),
             minEmployees: data.minEmployees,
             startTime: parseTime(data.startTime),
             endTime: parseTime(data.endTime)
         }
 
-        createShiftMutation.mutateAsync(dto).then(() => {
+        updateShiftMutation.mutateAsync(dto).then(() => {
             toast({
                 title: "Success",
-                description: "Shift created successfully."
+                description: "Shift updated successfully."
             })
 
             setDialog(null)
@@ -63,7 +69,7 @@ export const CreateShift = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Create Shift</DialogTitle>
+                        <DialogTitle>Edit Shift</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
@@ -84,7 +90,7 @@ export const CreateShift = () => {
                                 <FormItem>
                                     <FormLabel>Start</FormLabel>
                                     <FormControl>
-                                        <Input onChange={e => {
+                                        <Input {...field} onChange={e => {
                                             field.onChange(e.target.value + ":00")
                                         }} type="time"/>
                                     </FormControl>
@@ -98,7 +104,7 @@ export const CreateShift = () => {
                                 <FormItem>
                                     <FormLabel>Start</FormLabel>
                                     <FormControl>
-                                        <Input onChange={e => {
+                                        <Input {...field} onChange={e => {
                                             field.onChange(e.target.value + ":00")
                                         }} type="time"/>
                                     </FormControl>
@@ -112,7 +118,7 @@ export const CreateShift = () => {
                                 <FormItem>
                                     <FormLabel>minEmployees</FormLabel>
                                     <FormControl>
-                                        <Input onChange={e => {
+                                        <Input {...field} onChange={e => {
                                             const parsed = parseInt(e.target.value)
                                             field.onChange(isNaN(parsed) ? "" : parsed)
                                         }} type="number"/>
@@ -125,7 +131,7 @@ export const CreateShift = () => {
                     </div>
 
                     <DialogFooter className="mt-4">
-                        <Button type="submit">create</Button>
+                        <Button type="submit">edit</Button>
                     </DialogFooter>
                 </form>
             </Form>

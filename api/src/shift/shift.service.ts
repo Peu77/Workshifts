@@ -11,8 +11,8 @@ export class ShiftService {
     async create(name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
         const shift = new ShiftEntity();
         shift.name = name;
-        shift.startTime = this.shiftTimeToDate(startTime);
-        shift.endTime = this.shiftTimeToDate(endTime);
+        shift.startTime = startTime
+        shift.endTime = endTime
         shift.minEmployees = minEmployees;
 
         return this.shiftRepository.save(shift);
@@ -24,5 +24,13 @@ export class ShiftService {
 
     async getShifts() {
         return this.shiftRepository.find();
+    }
+
+    delete(id: number) {
+        return this.shiftRepository.delete(id);
+    }
+
+    update(id: any, name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
+        return this.shiftRepository.update(id, {name, startTime, endTime, minEmployees});
     }
 }

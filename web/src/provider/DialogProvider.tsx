@@ -1,9 +1,9 @@
-
 import {createContext, useEffect, useState} from "react";
 import {Dialog} from "@/components/ui/dialog";
 
 type DialogContextType = {
-    setDialog: (dialog: JSX.Element | null) => void
+    setDialog: (dialog: JSX.Element | null) => void,
+    dialog: JSX.Element | null
 }
 
 type DialogProviderProps = {
@@ -11,7 +11,8 @@ type DialogProviderProps = {
 }
 export const DialogContext = createContext<DialogContextType>({
     setDialog: () => {
-    }
+    },
+    dialog: null
 })
 export const ModalProvider = (props: DialogProviderProps) => {
     const [dialog, setDialog] = useState<JSX.Element | null>(null)
@@ -26,7 +27,7 @@ export const ModalProvider = (props: DialogProviderProps) => {
     }, [dialog]);
 
     return (
-        <DialogContext.Provider value={{ setDialog}}>
+        <DialogContext.Provider value={{setDialog, dialog}}>
             <Dialog children={dialog} open={true} onOpenChange={() => setDialog(null)}/>
             {props.children}
         </DialogContext.Provider>

@@ -8,17 +8,50 @@ export class ShiftEntity {
     @Column()
     name: string;
 
-    @Column({type: "time"})
-    startTime: Date;
+    @Column({
+        type: "time", transformer: {
+            from(value: string): ShiftTime {
+                const split = value.split(":")
+                return {
+                    hours: parseInt(split[0]),
+                    minutes: parseInt(split[1])
+                }
+            },
+            to(value: ShiftTime): Date {
+                console.log("to", value)
+                const date = new Date()
+                date.setHours(value.hours)
+                date.setMinutes(value.minutes)
+                return date
+            }
+        }
+    })
+    startTime: ShiftTime;
 
-    @Column({type: "time"})
-    endTime: Date;
+    @Column({
+        type: "time", transformer: {
+            from(value: string): any {
+                const split = value.split(":")
+                return {
+                    hours: parseInt(split[0]),
+                    minutes: parseInt(split[1])
+                }
+            },
+            to(value: ShiftTime): Date {
+                const date = new Date()
+                date.setHours(value.hours)
+                date.setMinutes(value.minutes)
+                return date
+            }
+        }
+    })
+    endTime: ShiftTime;
 
     @Column()
     minEmployees: number;
 }
 
-export interface ShiftTime{
+export interface ShiftTime {
     hours: number;
     minutes: number;
 }

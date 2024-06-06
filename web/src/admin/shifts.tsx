@@ -1,21 +1,15 @@
-import {Shift} from "@/types/Shift.ts";
-import api from "@/api.ts";
-import {useQuery} from "@tanstack/react-query";
 import {Button} from "@/components/ui/button.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {CreateShift} from "@/admin/dialog/createShift.tsx";
+import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {ShiftCell} from "@/admin/shift";
+import {useGetShifts} from "@/admin/shiftsApi";
 
 export const Shifts = () => {
-    const shiftResult = useQuery<Shift[]>({
-        queryKey: ["shifts"],
-        queryFn: async () => {
-            const response = await api.get("/shift")
-            return response.data
-        }
-    })
+    const {setDialog, dialog} = useContext(DialogContext)
+    const shiftResult = useGetShifts();
 
-    const {setDialog} = useContext(DialogContext)
 
     return (
         <div>
@@ -23,14 +17,22 @@ export const Shifts = () => {
             {shiftResult.isLoading && <p>Loading...</p>}
             {shiftResult.isError && <p>Error</p>}
             {shiftResult.data && (
-                <ul>
-                    {shiftResult.data.map((shift) => (
-                        <li key={shift.id}>
-                            <h3>{shift.name}</h3>
-                            <p>{shift.startTime} - {shift.endTime}</p>
-                        </li>
-                    ))}
-                </ul>
+                <Table className="mt-4">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>name</TableHead>
+                            <TableHead>start</TableHead>
+                            <TableHead>end</TableHead>
+                            <TableHead>min employees</TableHead>
+                            <TableHead>actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {shiftResult.data.map((shift) => (
+                            <ShiftCell {...shift}/>
+                        ))}
+                    </TableBody>
+                </Table>
             )}
         </div>
     )
