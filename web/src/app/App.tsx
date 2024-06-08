@@ -58,9 +58,10 @@ const App = () => {
         <>
             <div className="space-y-4">
                 <h1>Welcome back, {data?.name}</h1>
-                <div className="flex gap-4">
+                <div className="flex gap-4 flex-wrap">
                     {weekDays.map((day) => (
-                        <ShiftDay name={day.name} date={day.date} admin={isAdmin} shifts={shifts.data || []}/>
+                        <ShiftDay name={day.name} date={day.date} isAdmin={isAdmin} shifts={shifts.data || []}
+                                  isToday={day.date.getDay() === today.getDay()}/>
                     ))}
                 </div>
             </div>

@@ -10,8 +10,9 @@ import {useMemo, useState} from "react";
 interface ShiftDayProps {
     name: string,
     date: Date,
-    admin: boolean,
-    shifts: Shift[]
+    shifts: Shift[],
+    isToday: boolean
+    isAdmin: boolean,
 }
 
 export default (props: ShiftDayProps) => {
@@ -32,11 +33,11 @@ export default (props: ShiftDayProps) => {
     }, [shiftsDays.data]);
 
     return (
-        <Card className="w-[400px]">
+        <Card className={cn("flex-grow min-w-[300px] max-w-[400px]", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
                 <CardTitle>{props.name}</CardTitle>
                 <CardDescription>{props.date?.toDateString()}</CardDescription>
-                {props.admin && availableShiftsToAssign.length > 0 && (
+                {props.isAdmin && availableShiftsToAssign.length > 0 && (
                     <div className="flex gap-2">
                         <Select value={selectedShift || ""} onValueChange={setSelectedShift}>
                             <SelectTrigger>
@@ -73,7 +74,7 @@ export default (props: ShiftDayProps) => {
                             <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
                             <p>Users: {shiftDay.users.length}/{shiftDay.shift.minEmployees}</p>
 
-                            {props.admin && <MinusCircleIcon
+                            {props.isAdmin && <MinusCircleIcon
                                 onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
                                 className="absolute right-[-5px] top-[-5px] cursor-pointer hover:text-red-300"/>}
                         </div>
