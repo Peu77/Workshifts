@@ -12,9 +12,10 @@ import {
 } from '@nestjs/common';
 import {ShiftDto} from "./dtos/shiftDto";
 import {ShiftService} from "./shift.service";
-import {AuthGuard} from "../user/guards/authGuard";
+import {AuthGuard, UserParam} from "../user/guards/authGuard";
 import {AdminGuard} from "../user/guards/adminGuard";
 import {ShiftDayEntity} from "./entities/shiftDay.entity";
+import {UserEntity} from "../user/entities/user.entity";
 
 @UseGuards(AuthGuard)
 @Controller('shift')
@@ -79,7 +80,16 @@ export class ShiftController {
     @Delete("shiftDay/:id")
     async deleteShiftDay(@Param("id", ParseIntPipe) id: number) {
         try {
-            return this.shiftService.deleteShiftDay(id);
+            return await this.shiftService.deleteShiftDay(id);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
+    @Put("shiftDay/:id/join")
+    async joinShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @UserParam() user: UserEntity) {
+        try {
+            return await this.shiftService.joinShiftDay(shiftDay, user);
         } catch (e) {
             throw new BadRequestException(e.message)
         }

@@ -15,7 +15,7 @@ interface ShiftDayProps {
 export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
     const deleteShiftFromDayMutation = useDeleteShiftFromDay(date)
     const getMe = useGetMe();
-    const joinShiftDayMutation = useJoinShiftDay();
+    const joinShiftDayMutation = useJoinShiftDay(date);
 
     const isMeIncluded = useMemo(() => {
         return shiftDay.users.some(user => user.id === getMe.data?.id)

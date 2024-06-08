@@ -3,6 +3,7 @@ import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {ShiftEntity, ShiftTime} from "./entities/shift.entity";
 import {ShiftDayEntity} from "./entities/shiftDay.entity";
+import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class ShiftService {
@@ -34,6 +35,16 @@ export class ShiftService {
         shiftDay.users = [];
 
         return this.shiftDayRepository.save(shiftDay);
+    }
+
+    async joinShiftDay(shiftDay: number, user: UserEntity) {
+        const shiftDayEntity = await this.shiftDayRepository.findOne({where: {id: shiftDay}, relations: ["users"]});
+        if (!shiftDayEntity) {
+            throw new Error("Shift day not found")
+        }
+
+        shiftDayEntity.users.push(user);
+        return this.shiftDayRepository.save(shiftDayEntity);
     }
 
     deleteShiftDay(id: number) {

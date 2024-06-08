@@ -56,7 +56,7 @@ export function useDeleteShiftFromDay(date: Date) {
     })
 }
 
-export function useJoinShiftDay() {
+export function useJoinShiftDay(date: Date) {
     const queryClient = useQueryClient()
 
     return useMutation({
@@ -65,11 +65,12 @@ export function useJoinShiftDay() {
             shiftDayId: number,
             user: User
         }) => {
-            await api.post(`/shift/shiftDay/${data.shiftDayId}/join`)
+            await api.put(`/shift/shiftDay/${data.shiftDayId}/join`)
             return data
         },
         onSuccess: (data) => {
-            queryClient.setQueryData([KEY], (old: ShiftDay[] | undefined) => {
+            queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
+                console.log(old, data)
                 return old ? old.map(shiftDay => {
                     if (shiftDay.id === data.shiftDayId) {
                         return {...shiftDay, users: [...shiftDay.users, data.user]}
