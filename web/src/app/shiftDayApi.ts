@@ -38,3 +38,20 @@ export function useGetShiftsForDay(date: Date) {
         }
     })
 }
+
+export function useDeleteShiftFromDay(date: Date) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: [KEY, date],
+        mutationFn: async (shiftDayId: number) => {
+            await api.delete(`/shift/shiftDay/${shiftDayId}`)
+            return shiftDayId
+        },
+        onSuccess: (id) => {
+            queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
+                return old ? old.filter(shiftDay => shiftDay.id !== id) : old
+            })
+        }
+    })
+}

@@ -1,6 +1,6 @@
 import {useDeleteUser, User} from "@/admin/usersApi";
 import {TableCell, TableRow} from "@/components/ui/table";
-import {EditIcon, TrashIcon} from "lucide-react";
+import { TrashIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {ColorRing} from "react-loader-spinner";
 

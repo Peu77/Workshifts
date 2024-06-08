@@ -74,4 +74,14 @@ export class ShiftController {
     async getShiftsForDay(@Param("date") date: string): Promise<ShiftDayEntity[]> {
         return this.shiftService.getShiftsForDay(date);
     }
+
+    @UseGuards(AdminGuard)
+    @Delete("shiftDay/:id")
+    async deleteShiftDay(@Param("id", ParseIntPipe) id: number) {
+        try {
+            return this.shiftService.deleteShiftDay(id);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
 }

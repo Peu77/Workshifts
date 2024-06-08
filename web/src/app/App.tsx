@@ -3,6 +3,7 @@ import api from "@/api.ts";
 import {Oval} from "react-loader-spinner";
 import ShiftDay from "@/app/shiftDay.tsx";
 import {User} from "@/admin/usersApi.ts";
+import {useGetShifts} from "@/admin/shiftsApi.ts";
 
 
 const App = () => {
@@ -14,6 +15,8 @@ const App = () => {
             return response.data
         }
     })
+
+    const shifts = useGetShifts();
 
     if (isLoading) {
         return <Oval
@@ -57,7 +60,7 @@ const App = () => {
                 <h1>Welcome back, {data?.name}</h1>
                 <div className="flex gap-4">
                     {weekDays.map((day) => (
-                        <ShiftDay name={day.name} date={day.date} admin={isAdmin}/>
+                        <ShiftDay name={day.name} date={day.date} admin={isAdmin} shifts={shifts.data || []}/>
                     ))}
                 </div>
             </div>

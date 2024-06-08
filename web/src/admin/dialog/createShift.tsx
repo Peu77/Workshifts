@@ -7,7 +7,6 @@ import {FormControl, FormField, FormItem, Form, FormLabel, FormMessage} from "@/
 import {Input} from "@/components/ui/input.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
-import api from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {ShiftDto, useCreateShift} from "@/admin/shiftsApi";
 

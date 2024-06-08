@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// @ts-ignore
 const API_HOST = import.meta.env.VITE_API_HOST;
 
 const api = axios.create({

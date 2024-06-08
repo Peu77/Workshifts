@@ -36,6 +36,10 @@ export class ShiftService {
         return this.shiftDayRepository.save(shiftDay);
     }
 
+    deleteShiftDay(id: number) {
+        return this.shiftDayRepository.delete(id);
+    }
+
     async getShiftsForDay(date: string) {
         return this.shiftDayRepository.find({where: {date: new Date(date)}, relations: ["shift", "users"]});
     }
