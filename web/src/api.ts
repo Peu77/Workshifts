@@ -2,9 +2,13 @@ import axios from 'axios';
 
 // @ts-ignore
 const API_HOST = import.meta.env.VITE_API_HOST;
-
+const dateKeyRx = /date/i;
 const api = axios.create({
-  baseURL: API_HOST,
+    baseURL: API_HOST,
+    transformResponse: (data) =>
+        JSON.parse(data, (key, value) =>
+            dateKeyRx.test(key) ? new Date(value) : value
+        ),
 });
 
 api.interceptors.request.use((config) => {

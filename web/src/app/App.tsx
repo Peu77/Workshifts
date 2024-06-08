@@ -1,20 +1,11 @@
-import {useQuery} from "@tanstack/react-query";
-import api from "@/api.ts";
 import {Oval} from "react-loader-spinner";
-import ShiftDay from "@/app/shiftDay.tsx";
-import {User} from "@/admin/usersApi.ts";
+import Day from "@/app/day.tsx";
+import {useGetMe} from "@/admin/usersApi.ts";
 import {useGetShifts} from "@/admin/shiftsApi.ts";
 
 
 const App = () => {
-    const {data, isLoading, isError} = useQuery<User>({
-        queryKey: ["me"],
-        queryFn: async () => {
-            await new Promise((resolve) => setTimeout(resolve, 300))
-            const response = await api.get("/user/me")
-            return response.data
-        }
-    })
+    const {data, isLoading, isError} = useGetMe();
 
     const shifts = useGetShifts();
 
@@ -60,7 +51,7 @@ const App = () => {
                 <h1>Welcome back, {data?.name}</h1>
                 <div className="flex gap-4 flex-wrap">
                     {weekDays.map((day) => (
-                        <ShiftDay name={day.name} date={day.date} isAdmin={isAdmin} shifts={shifts.data || []}
+                        <Day key={day.date.toISOString()} name={day.name} date={day.date} isAdmin={isAdmin} shifts={shifts.data || []}
                                   isToday={day.date.getDay() === today.getDay()}/>
                     ))}
                 </div>

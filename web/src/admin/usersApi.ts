@@ -16,6 +16,17 @@ export interface User {
     role: string;
 }
 
+export function useGetMe() {
+    return useQuery<User>({
+        queryKey: ["me"],
+        queryFn: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 300))
+            const response = await api.get("/user/me")
+            return response.data
+        }
+    })
+}
+
 export function useGetUsers() {
     return useQuery<User[]>({
         queryKey: [KEY],
