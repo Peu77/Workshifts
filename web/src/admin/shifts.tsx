@@ -7,9 +7,8 @@ import {ShiftCell} from "@/admin/shift";
 import {useGetShifts} from "@/admin/shiftsApi";
 
 export const Shifts = () => {
-    const {setDialog, dialog} = useContext(DialogContext)
+    const {setDialog} = useContext(DialogContext)
     const shiftResult = useGetShifts();
-
 
     return (
         <div>

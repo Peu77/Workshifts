@@ -2,13 +2,11 @@ import {useQuery} from "@tanstack/react-query";
 import api from "@/api.ts";
 import {Oval} from "react-loader-spinner";
 import ShiftDay from "@/app/shiftDay.tsx";
+import {User} from "@/admin/usersApi.ts";
 
 
 const App = () => {
-    const {data, isLoading, isError} = useQuery<{
-        name: string,
-        email: string
-    }>({
+    const {data, isLoading, isError} = useQuery<User>({
         queryKey: ["me"],
         queryFn: async () => {
             await new Promise((resolve) => setTimeout(resolve, 300))
@@ -32,7 +30,26 @@ const App = () => {
     if (isError || !data)
         return <h1>Error</h1>
 
-    const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",]
+    const isAdmin = data.role === "admin"
+
+    // current week days with name and date
+    let weekDays: { name: string, date: Date }[] = [
+        {name: "Monday", date: new Date()},
+        {name: "Tuesday", date: new Date()},
+        {name: "Wednesday", date: new Date()},
+        {name: "Thursday", date: new Date()},
+        {name: "Friday", date: new Date()},
+        {name: "Saturday", date: new Date()},
+        {name: "Sunday", date: new Date()},
+    ]
+
+    let today = new Date()
+    let day = today.getDay()
+    weekDays = weekDays.map((weekDay, index) => {
+        weekDay.date.setDate(today.getDate() + index - day + 1)
+        return weekDay
+    })
+
 
     return (
         <>
@@ -40,7 +57,7 @@ const App = () => {
                 <h1>Welcome back, {data?.name}</h1>
                 <div className="flex gap-4">
                     {weekDays.map((day) => (
-                        <ShiftDay name={day} date={new Date()} shifts={[]}/>
+                        <ShiftDay name={day.name} date={day.date} admin={isAdmin}/>
                     ))}
                 </div>
             </div>

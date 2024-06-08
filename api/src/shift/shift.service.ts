@@ -2,10 +2,14 @@ import {Injectable} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {ShiftEntity, ShiftTime} from "./entities/shift.entity";
+import {ShiftDayEntity} from "./entities/shiftDay.entity";
 
 @Injectable()
 export class ShiftService {
-    constructor(@InjectRepository(ShiftEntity) private shiftRepository: Repository<ShiftEntity>) {
+    constructor(
+        @InjectRepository(ShiftEntity) private shiftRepository: Repository<ShiftEntity>,
+        @InjectRepository(ShiftDayEntity) private shiftDayRepository: Repository<ShiftDayEntity>,
+    ) {
     }
 
     async create(name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
@@ -18,8 +22,22 @@ export class ShiftService {
         return this.shiftRepository.save(shift);
     }
 
-    shiftTimeToDate(shiftTime: ShiftTime): Date {
-        return new Date(0, 0, 0, shiftTime.hours, shiftTime.minutes, 0);
+    async addShiftToDay(date: string, shiftId: number) {
+        const shift = await this.shiftRepository.findOneBy({id: shiftId})
+        if (!shift) {
+            throw new Error("Shift not found")
+        }
+
+        const shiftDay = new ShiftDayEntity();
+        shiftDay.date = new Date(date);
+        shiftDay.shift = shift;
+        shiftDay.users = [];
+
+        return this.shiftDayRepository.save(shiftDay);
+    }
+
+    async getShiftsForDay(date: string) {
+        return this.shiftDayRepository.find({where: {date: new Date(date)}, relations: ["shift", "users"]});
     }
 
     async getShifts() {
