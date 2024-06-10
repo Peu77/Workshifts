@@ -7,10 +7,19 @@ export class ShiftDayEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: "date"})
+    @Column({
+        type: "date", transformer: {
+            from: (value: string) => {
+                return new Date(value)
+            },
+            to: (value: Date) => {
+                return value
+            }
+        }
+    })
     date: Date;
 
-    @ManyToOne(() => ShiftEntity)
+    @ManyToOne(() => ShiftEntity, {cascade: true, onDelete: "CASCADE"})
     @JoinColumn()
     shift: ShiftEntity;
 

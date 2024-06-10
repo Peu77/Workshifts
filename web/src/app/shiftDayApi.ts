@@ -2,6 +2,8 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "@/api.ts";
 import {User} from "@/admin/usersApi.ts";
 import {Shift} from "@/admin/shiftsApi.ts";
+import {useToast} from "@/components/ui/use-toast.ts";
+import {AxiosError} from "axios";
 
 const KEY = "shiftDay";
 
@@ -84,6 +86,7 @@ export function useJoinShiftDay(date: Date) {
 
 export function useQuitShiftDay(date: Date) {
     const queryClient = useQueryClient()
+    const {toast} = useToast();
 
     return useMutation({
         mutationKey: ["quitShiftDay"],
@@ -103,6 +106,13 @@ export function useQuitShiftDay(date: Date) {
                     }
                     return shiftDay
                 }) : old
+            })
+        },
+        onError: (error: AxiosError) => {
+            toast({
+                title: "Error quitting shift",
+                description: error?.response?.data?.message,
+                variant: "destructive"
             })
         }
     })

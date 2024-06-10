@@ -1,5 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
-import {ShiftDayEntity} from "./shiftDay.entity";
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity("shifts")
 export class ShiftEntity {
@@ -19,7 +18,6 @@ export class ShiftEntity {
                 }
             },
             to(value: ShiftTime): Date {
-                console.log("to", value)
                 const date = new Date()
                 date.setHours(value.hours)
                 date.setMinutes(value.minutes)

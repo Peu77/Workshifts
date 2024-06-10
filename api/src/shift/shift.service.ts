@@ -4,14 +4,18 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {ShiftEntity, ShiftTime} from "./entities/shift.entity";
 import {ShiftDayEntity} from "./entities/shiftDay.entity";
 import {UserEntity} from "../user/entities/user.entity";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class ShiftService {
     constructor(
         @InjectRepository(ShiftEntity) private shiftRepository: Repository<ShiftEntity>,
         @InjectRepository(ShiftDayEntity) private shiftDayRepository: Repository<ShiftDayEntity>,
+        private configService: ConfigService
     ) {
     }
+
+    DAYS_BEFORE_ABLE_TO_QUIT = this.configService.getOrThrow<number>("DAYS_BEFORE_ABLE_TO_QUIT")
 
     async create(name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
         const shift = new ShiftEntity();
@@ -53,7 +57,10 @@ export class ShiftService {
     }
 
     async quitShiftDay(shiftDay: number, user: UserEntity) {
-        const shiftDayEntity = await this.shiftDayRepository.findOne({where: {id: shiftDay}, relations: ["users"]});
+        const shiftDayEntity = await this.shiftDayRepository.findOne({
+            where: {id: shiftDay},
+            relations: ["users", "shift"]
+        });
         if (!shiftDayEntity) {
             throw new Error("Shift day not found")
         }
@@ -61,6 +68,19 @@ export class ShiftService {
         if (!shiftDayEntity.users.some(u => u.id === user.id)) {
             throw new Error("User not found in shift day")
         }
+
+        if (shiftDayEntity.users.length <= shiftDayEntity.shift.minEmployees) {
+            throw new Error("Shift day has minimum employees")
+        }
+
+        const now = new Date();
+
+        const diff = (shiftDayEntity.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        console.log(diff)
+        if (diff < this.DAYS_BEFORE_ABLE_TO_QUIT) {
+            throw new Error("Cannot quit shift day")
+        }
+
 
         shiftDayEntity.users = shiftDayEntity.users.filter(u => u.id !== user.id);
         return this.shiftDayRepository.save(shiftDayEntity);
