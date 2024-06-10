@@ -27,7 +27,7 @@ export const Shifts = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {shiftResult.data.map((shift) => (
+                        {shiftResult.data.sort((a, b) => a.startTime.hours - b.startTime.hours).map((shift) => (
                             <ShiftCell key={shift.id} {...shift}/>
                         ))}
                     </TableBody>
