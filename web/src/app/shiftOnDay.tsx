@@ -46,27 +46,31 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
     }
 
     return (
-        <div
-            className={cn(shiftDay.users.length < shiftDay.shift.minEmployees ? "bg-red-200 " : "bg-green-200", "p-3 rounded-lg relative")}>
-            {isAdmin && <MinusCircleIcon
-                onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
-                className="absolute right-[-5px] top-[-5px] cursor-pointer hover:text-red-300"/>}
+        <div className="flex rounded-lg overflow-hidden">
+            {isMeIncluded &&  <div className="w-[5px] bg-green-400"/>}
+            <div
+                className={cn(shiftDay.users.length < shiftDay.shift.minEmployees ? "bg-red-200 " : "bg-green-200", "p-3 relative flex-grow")}>
+                {isAdmin && <MinusCircleIcon
+                    onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
+                    className="absolute right-[-5px] top-[-5px] cursor-pointer hover:text-red-300"/>}
 
-            <h3>{shiftDay.shift.name}</h3>
-            <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
-            <p>Users: {shiftDay.users.length}/{shiftDay.shift.minEmployees}</p>
+                <h3>{shiftDay.shift.name}</h3>
+                <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
+                <p>Users: {shiftDay.users.length}/{shiftDay.shift.minEmployees}</p>
 
 
-            {(joinShiftDayMutation.isPending || quitShiftDayMutation.isPending) ? <ColorRing
-                visible={true}
-                height="60"
-                width="60"
-                ariaLabel="color-ring-loading"
-                wrapperStyle={{margin: "auto"}}
-                wrapperClass="color-ring-wrapper"
-                colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-            /> : isMeIncluded ? <Button className="w-full mt-4" onClick={quitShift}>quit</Button> :
-                <Button className="w-full mt-4" variant="secondary" onClick={joinShift}>join</Button>}
+                {(joinShiftDayMutation.isPending || quitShiftDayMutation.isPending) ? <ColorRing
+                    visible={true}
+                    height="60"
+                    width="60"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{margin: "auto"}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+                /> : isMeIncluded ? <Button className="w-full mt-4" onClick={quitShift}>quit</Button> :
+                    <Button className="w-full mt-4" variant="secondary" onClick={joinShift}>join</Button>}
+            </div>
         </div>
+
     )
 }
