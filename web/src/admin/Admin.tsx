@@ -6,6 +6,7 @@ import {useToast} from "@/components/ui/use-toast.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Shifts} from "@/admin/shifts.tsx";
 import {Users} from "@/admin/users";
+import {Button} from "@/components/ui/button.tsx";
 
 export const Admin = () => {
     const {data, isLoading, isError} = useQuery<{
@@ -49,29 +50,32 @@ export const Admin = () => {
     }
 
     return (
-        <div className="flex gap-4 p-4">
-            <Card className="w-1/2">
-                <CardHeader>
-                    <CardTitle>Shifts</CardTitle>
-                    <CardDescription>Manage shifts</CardDescription>
-                </CardHeader>
-
-                <CardContent>
-                    <Shifts/>
-                </CardContent>
-            </Card>
-
-            <Card className="w-1/2">
-                <CardHeader>
-                    <CardTitle>Users</CardTitle>
-                    <CardDescription>Manage users and roles</CardDescription>
+        <div className="p-2">
+            <Button onClick={() => navigate("/app")}>App</Button>
+            <div className="flex gap-4 p-4 flex-wrap flex">
+                <Card className="min-w-[400px] flex-grow">
+                    <CardHeader>
+                        <CardTitle>Shifts</CardTitle>
+                        <CardDescription>Manage shifts</CardDescription>
+                    </CardHeader>
 
                     <CardContent>
-                        <Users/>
+                        <Shifts/>
                     </CardContent>
-                </CardHeader>
-            </Card>
+                </Card>
 
+                <Card className="min-w-[400px] flex-grow">
+                    <CardHeader>
+                        <CardTitle>Users</CardTitle>
+                        <CardDescription>Manage users and roles</CardDescription>
+
+                        <CardContent>
+                            <Users/>
+                        </CardContent>
+                    </CardHeader>
+                </Card>
+
+            </div>
         </div>
     )
 }

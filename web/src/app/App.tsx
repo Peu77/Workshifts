@@ -2,12 +2,14 @@ import {Oval} from "react-loader-spinner";
 import Day from "@/app/day.tsx";
 import {useGetMe} from "@/admin/usersApi.ts";
 import {useGetShifts} from "@/admin/shiftsApi.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 const App = () => {
     const {data, isLoading, isError} = useGetMe();
-
     const shifts = useGetShifts();
+    const navigate = useNavigate();
 
     if (isLoading) {
         return <Oval
@@ -47,8 +49,9 @@ const App = () => {
 
     return (
         <>
-            <div className="space-y-4">
+            <div className="space-y-4 p-2">
                 <h1>Welcome back, {data?.name}</h1>
+                {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
                 <div className="flex gap-4 flex-wrap">
                     {weekDays.map((day) => (
                         <Day key={day.date.toISOString()} name={day.name} date={day.date} isAdmin={isAdmin} shifts={shifts.data || []}
