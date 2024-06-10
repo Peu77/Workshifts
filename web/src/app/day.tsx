@@ -66,7 +66,7 @@ export default (props: ShiftDayProps) => {
                 {shiftsDays.isError && <p>Error</p>}
 
                 <div className="space-y-4">
-                    {shiftsDays.data && shiftsDays.data.map((shiftDay: ShiftDay) => (
+                    {shiftsDays.data && shiftsDays.data.sort((a, b) => a.shift.startTime.hours - b.shift.startTime.hours).map((shiftDay: ShiftDay) => (
                         <ShiftOnDay key={shiftDay.id} shiftDay={shiftDay} isAdmin={props.isAdmin} date={props.date}/>
                     ))}
                 </div>

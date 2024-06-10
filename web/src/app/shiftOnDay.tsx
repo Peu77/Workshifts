@@ -52,7 +52,7 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                 className={cn(shiftDay.users.length < shiftDay.shift.minEmployees ? "bg-red-200 " : "bg-green-200", "p-3 relative flex-grow")}>
                 {isAdmin && <MinusCircleIcon
                     onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
-                    className="absolute right-[-5px] top-[-5px] cursor-pointer hover:text-red-300"/>}
+                    className="absolute right-[-0] top-[-0] cursor-pointer hover:text-red-300"/>}
 
                 <h3>{shiftDay.shift.name}</h3>
                 <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
