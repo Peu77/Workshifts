@@ -11,7 +11,7 @@ import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hov
 interface ShiftDayProps {
     shiftDay: ShiftDay,
     isAdmin: boolean,
-    date: Date
+    date: Date,
 }
 
 export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
@@ -63,6 +63,7 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                     </HoverCardTrigger>
 
                     <HoverCardContent>
+                        {shiftDay.users.length === 0 && <p>No users assigned</p>}
                         <ul>
                             {shiftDay.users.map(user => <li className="flex gap-4" key={user.id}>
                                 <p>{user.name}</p>

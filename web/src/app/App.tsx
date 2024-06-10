@@ -4,12 +4,42 @@ import {useGetMe} from "@/admin/usersApi.ts";
 import {useGetShifts} from "@/admin/shiftsApi.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import {useMemo, useState} from "react";
 
 
 const App = () => {
     const {data, isLoading, isError} = useGetMe();
+    const [timeRange, setTimeRange] = useState("1") // 1 = week, 2 = month
     const shifts = useGetShifts();
     const navigate = useNavigate();
+    let today = new Date()
+    const weekDays = useMemo(() => {
+        let newDays: { name: string, date: Date }[] = []
+        let day = today.getDay()
+
+        if (timeRange === "2") {
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), i)
+                newDays.push({
+                    name: date.toLocaleDateString('de', {weekday: 'long'}),
+                    date: date
+                })
+            }
+
+        } else {
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - day + i)
+                newDays.push({
+                    name: date.toLocaleDateString('de', {weekday: 'long'}),
+                    date: date
+                })
+            }
+        }
+
+        return newDays
+    }, [timeRange]);
 
     if (isLoading) {
         return <Oval
@@ -28,34 +58,30 @@ const App = () => {
 
     const isAdmin = data.role === "admin"
 
-    // current week days with name and date
-    let weekDays: { name: string, date: Date }[] = [
-        {name: "Monday", date: new Date()},
-        {name: "Tuesday", date: new Date()},
-        {name: "Wednesday", date: new Date()},
-        {name: "Thursday", date: new Date()},
-        {name: "Friday", date: new Date()},
-        {name: "Saturday", date: new Date()},
-        {name: "Sunday", date: new Date()},
-    ]
-
-    let today = new Date()
-    let day = today.getDay()
-    weekDays = weekDays.map((weekDay, index) => {
-        weekDay.date.setDate(today.getDate() + index - day + 1)
-        return weekDay
-    })
-
 
     return (
         <>
             <div className="space-y-4 p-2">
                 <h1>Welcome back, {data?.name}</h1>
                 {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
-                <div className="flex gap-4 flex-wrap">
+                <Select onValueChange={setTimeRange} defaultValue="1">
+                    <SelectTrigger className="max-w-[160px]">
+                        <SelectValue placeholder="select time range"/>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectItem value="1">Week</SelectItem>
+                            <SelectItem value="2">Month</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <div className="flex gap-4 flex-wrap items-start">
                     {weekDays.map((day) => (
-                        <Day key={day.date.toISOString()} name={day.name} date={day.date} isAdmin={isAdmin} shifts={shifts.data || []}
-                                  isToday={day.date.getDay() === today.getDay()}/>
+                        <Day key={day.date.toISOString()} defaultOpen={timeRange === "1"} name={day.name}
+                             date={day.date} isAdmin={isAdmin}
+                             shifts={shifts.data || []}
+                             isToday={day.date.getFullYear() === today.getFullYear() && day.date.getMonth() === today.getMonth() && day.date.getDate() === today.getDate()}/>
                     ))}
                 </div>
             </div>
