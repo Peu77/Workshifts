@@ -43,7 +43,26 @@ export class ShiftService {
             throw new Error("Shift day not found")
         }
 
+        if (shiftDayEntity.users.some(u => u.id === user.id)) {
+            throw new Error("User already in shift day")
+        }
+
         shiftDayEntity.users.push(user);
+
+        return this.shiftDayRepository.save(shiftDayEntity);
+    }
+
+    async quitShiftDay(shiftDay: number, user: UserEntity) {
+        const shiftDayEntity = await this.shiftDayRepository.findOne({where: {id: shiftDay}, relations: ["users"]});
+        if (!shiftDayEntity) {
+            throw new Error("Shift day not found")
+        }
+
+        if (!shiftDayEntity.users.some(u => u.id === user.id)) {
+            throw new Error("User not found in shift day")
+        }
+
+        shiftDayEntity.users = shiftDayEntity.users.filter(u => u.id !== user.id);
         return this.shiftDayRepository.save(shiftDayEntity);
     }
 

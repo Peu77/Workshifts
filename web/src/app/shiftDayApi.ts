@@ -81,3 +81,29 @@ export function useJoinShiftDay(date: Date) {
         }
     })
 }
+
+export function useQuitShiftDay(date: Date) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["quitShiftDay"],
+        mutationFn: async (data: {
+            shiftDayId: number,
+            user: User
+        }) => {
+            await api.put(`/shift/shiftDay/${data.shiftDayId}/quit`)
+            return data
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
+                console.log(old, data)
+                return old ? old.map(shiftDay => {
+                    if (shiftDay.id === data.shiftDayId) {
+                        return {...shiftDay, users: shiftDay.users.filter(user => user.id !== data.user.id)}
+                    }
+                    return shiftDay
+                }) : old
+            })
+        }
+    })
+}

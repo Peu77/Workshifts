@@ -1,7 +1,7 @@
 import {cn} from "@/lib/utils.ts";
 import {getFormatedTime} from "@/admin/shiftsApi.ts";
 import {MinusCircleIcon} from "lucide-react";
-import {ShiftDay, useDeleteShiftFromDay, useJoinShiftDay} from "@/app/shiftDayApi.ts";
+import {ShiftDay, useDeleteShiftFromDay, useJoinShiftDay, useQuitShiftDay} from "@/app/shiftDayApi.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useMemo} from "react";
 import {useGetMe} from "@/admin/usersApi.ts";
@@ -16,16 +16,29 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
     const deleteShiftFromDayMutation = useDeleteShiftFromDay(date)
     const getMe = useGetMe();
     const joinShiftDayMutation = useJoinShiftDay(date);
+    const quitShiftDayMutation = useQuitShiftDay(date);
 
     const isMeIncluded = useMemo(() => {
-        return shiftDay.users.some(user => user.id === getMe.data?.id)
-    }, [getMe.data, shiftDay.shift]);
+        if(!getMe.data) return false
+
+        return shiftDay.users.some(user => user.id === getMe.data.id)
+    }, [shiftDay]);
 
     function joinShift() {
         if (!getMe.data) return
         if (joinShiftDayMutation.isPending) return
 
         joinShiftDayMutation.mutate({
+            shiftDayId: shiftDay.id,
+            user: getMe.data!
+        })
+    }
+
+    function quitShift() {
+        if (!getMe.data) return
+        if (joinShiftDayMutation.isPending) return
+
+        quitShiftDayMutation.mutate({
             shiftDayId: shiftDay.id,
             user: getMe.data!
         })
@@ -43,8 +56,8 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
             <p>Users: {shiftDay.users.length}/{shiftDay.shift.minEmployees}</p>
 
 
-            {isMeIncluded ? <Button className="w-full mt-4">quit</Button> :
-                <Button className="w-full mt-4" onClick={joinShift}>join</Button>}
+            {isMeIncluded ? <Button className="w-full mt-4" onClick={quitShift}>quit</Button> :
+                <Button className="w-full mt-4" variant="secondary" onClick={joinShift}>join</Button>}
         </div>
     )
 }

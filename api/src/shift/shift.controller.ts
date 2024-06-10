@@ -94,4 +94,13 @@ export class ShiftController {
             throw new BadRequestException(e.message)
         }
     }
+
+    @Put("shiftDay/:id/quit")
+    async quitShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @UserParam() user: UserEntity) {
+        try {
+            return await this.shiftService.quitShiftDay(shiftDay, user);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
 }
