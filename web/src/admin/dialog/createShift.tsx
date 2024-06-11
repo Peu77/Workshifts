@@ -95,7 +95,7 @@ export const CreateShift = () => {
                         <FormField control={form.control} name={"endTime"} render={({field}) => {
                             return (
                                 <FormItem>
-                                    <FormLabel>Start</FormLabel>
+                                    <FormLabel>End</FormLabel>
                                     <FormControl>
                                         <Input onChange={e => {
                                             field.onChange(e.target.value + ":00")
