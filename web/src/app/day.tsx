@@ -41,7 +41,7 @@ export default (props: ShiftDayProps) => {
         const firstDay = new Date(props.date.getFullYear(), props.date.getMonth(), 1)
         const dayOfWeek = firstDay.getDay()
         const firstWeekDay = firstDay.getDate() - dayOfWeek
-        const diff = props.date.getDate() - firstWeekDay - 1
+        const diff = props.date.getDate() - firstWeekDay
 
         return Math.ceil(diff / 7)
     }, [props.date, props.name]);
@@ -59,7 +59,7 @@ export default (props: ShiftDayProps) => {
                     {props.name}
                     {!allShiftsMinEmployees && <TrafficConeIcon className="text-red-400"/>}
                 </CardTitle>
-                <CardDescription>{props.date?.toDateString()}</CardDescription>
+                <CardDescription>{props.date?.toLocaleDateString("de")}</CardDescription>
 
                 {weekOfMonth && <p className="absolute top-0 left-2 font-bold">{weekOfMonth}</p>}
 

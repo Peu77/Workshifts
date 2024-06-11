@@ -111,7 +111,7 @@ export function useQuitShiftDay(date: Date) {
         onError: (error: AxiosError) => {
             toast({
                 title: "Error quitting shift",
-                description: error?.response?.data?.message,
+                description: (error?.response?.data as any)?.message,
                 variant: "destructive"
             })
         }
