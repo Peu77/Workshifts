@@ -1,11 +1,11 @@
 import * as React from "react"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { addDays, format } from "date-fns"
-import { DateRange } from "react-day-picker"
+import {CalendarIcon} from "@radix-ui/react-icons"
+import {addDays, format} from "date-fns"
+import {DateRange} from "react-day-picker"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
+import {Calendar} from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
@@ -13,15 +13,24 @@ import {
 } from "@/components/ui/popover"
 
 export function DatePickerWithRange({
-                                        className,
-                                    }: React.HTMLAttributes<HTMLDivElement>) {
+                                        onChange,
+                                    }: {
+    onChange?: (date: DateRange) => void
+}) {
+    const inThreeDays = addDays(new Date(), 3)
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: new Date(2022, 0, 20),
-        to: addDays(new Date(2022, 0, 20), 20),
+        from: new Date(),
+        to: inThreeDays
     })
 
+    React.useEffect(() => {
+        if (onChange && date) {
+            onChange(date)
+        }
+    }, [date, onChange])
+
     return (
-        <div className={cn("grid gap-2", className)}>
+        <div className={cn("grid gap-2")}>
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
@@ -32,7 +41,7 @@ export function DatePickerWithRange({
                             !date && "text-muted-foreground"
                         )}
                     >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        <CalendarIcon className="mr-2 h-4 w-4"/>
                         {date?.from ? (
                             date.to ? (
                                 <>

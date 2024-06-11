@@ -109,4 +109,14 @@ export class ShiftController {
             throw new BadRequestException(e.message)
         }
     }
+
+    @UseGuards(AdminGuard)
+    @Post("shiftDay/copyWeek/:dateFrom/:dateTo")
+    async copyWeek(@Param("dateFrom") dateFrom: string, @Param("dateTo") dateTo: string) {
+        try {
+            return await this.shiftService.copyWeek(dateFrom, dateTo);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
 }

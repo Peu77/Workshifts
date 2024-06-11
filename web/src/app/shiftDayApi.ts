@@ -5,7 +5,7 @@ import {Shift} from "@/admin/shiftsApi.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {AxiosError} from "axios";
 
-const KEY = "shiftDay";
+export const KEY = "shiftDay";
 
 export interface ShiftDay {
     id: number;

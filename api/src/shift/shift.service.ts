@@ -109,4 +109,40 @@ export class ShiftService {
     update(id: any, name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number, wholeDay: boolean) {
         return this.shiftRepository.update(id, {name, startTime, endTime, minEmployees, wholeDay});
     }
+
+    async copyWeek(dateFromString: string, dateToString: string) {
+        const dateFrom = new Date(dateFromString)
+        const dateTo = new Date(dateToString)
+        const map = new Map<number, ShiftDayEntity[]>()
+
+        const today = new Date();
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + i)
+            const shiftDays = await this.getShiftsForDay(date.toISOString())
+            map.set(i, shiftDays)
+        }
+
+        for (let day = dateFrom; day <= dateTo; day.setDate(day.getDate() + 1)) {
+            const shiftDays = map.get(day.getDay())
+            console.log(day.toLocaleDateString('de'), shiftDays?.length)
+
+            // delete all shift days for this day
+            const shiftToDelete = await this.getShiftsForDay(day.toISOString())
+            for (const shift of shiftToDelete) {
+                await this.deleteShiftDay(shift.id)
+            }
+
+            if (shiftDays) {
+                for (const shiftDay of shiftDays) {
+                    const newShiftDay = new ShiftDayEntity()
+                    newShiftDay.date = day
+                    newShiftDay.shift = shiftDay.shift
+                    newShiftDay.users = []
+                    await this.shiftDayRepository.save(newShiftDay)
+                }
+            }
+        }
+
+        return true
+    }
 }

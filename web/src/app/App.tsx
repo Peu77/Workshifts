@@ -6,11 +6,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useMemo, useState} from "react";
+import CopyShiftDays from "@/app/copyShiftDays.tsx";
 
 
 const App = () => {
     const {data, isLoading, isError} = useGetMe();
-    const [timeRange, setTimeRange] = useState("1") // 1 = week, 2 = month
+    const [timeRange, setTimeRange] = useState("2") // 1 = week, 2 = month
     const [month, setMonth] = useState(new Date().getMonth().toString())
     const shifts = useGetShifts();
     const navigate = useNavigate();
@@ -79,8 +80,14 @@ const App = () => {
         <>
             <div className="space-y-4 p-2">
                 <h1>Welcome back, {data?.name}</h1>
-                {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
-                <Select onValueChange={setTimeRange} defaultValue="1">
+                {isAdmin && (
+                    <div className="flex gap-4">
+                        <Button onClick={() => navigate("/admin")}>admin panel</Button>
+                        <CopyShiftDays/>
+                    </div>
+                )}
+
+                <Select onValueChange={setTimeRange} value={timeRange}>
                     <SelectTrigger className="max-w-[160px]">
                         <SelectValue placeholder="select time range"/>
                     </SelectTrigger>
