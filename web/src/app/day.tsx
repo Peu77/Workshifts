@@ -49,7 +49,7 @@ export default (props: ShiftDayProps) => {
     return (
         <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
-                <CardTitle>{props.name}</CardTitle>
+                <CardTitle className="text-sm lg:text-lg">{props.name}</CardTitle>
                 <CardDescription>{props.date?.toDateString()}</CardDescription>
 
                 {weekOfMonth && <p className="absolute top-0 left-2 font-bold">{weekOfMonth}</p>}
