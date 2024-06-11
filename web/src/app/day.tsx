@@ -34,13 +34,28 @@ export default (props: ShiftDayProps) => {
         return props.shifts.filter(shift => !shiftsDays.data?.some(shiftDay => shiftDay.shift.id === shift.id))
     }, [shiftsDays.data]);
 
+    const weekOfMonth = useMemo<number | undefined>(() => {
+        if (!props.date) return
+        if (props.name !== "Mo") return
+
+        const firstDay = new Date(props.date.getFullYear(), props.date.getMonth(), 1)
+        const dayOfWeek = firstDay.getDay()
+        const firstWeekDay = firstDay.getDate() - dayOfWeek
+        const diff = props.date.getDate() - firstWeekDay - 1
+
+        return Math.ceil(diff / 7)
+    }, [props.date, props.name]);
+
     return (
         <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
                 <CardTitle>{props.name}</CardTitle>
                 <CardDescription>{props.date?.toDateString()}</CardDescription>
 
-                {isOpen ? <MinusCircleIcon className="absolute top-0 right-0 cursor-pointer" onClick={() => setIsOpen(false)}/> :
+                {weekOfMonth && <p className="absolute top-0 left-2 font-bold">{weekOfMonth}</p>}
+
+                {isOpen ? <MinusCircleIcon className="absolute top-0 right-0 cursor-pointer"
+                                           onClick={() => setIsOpen(false)}/> :
                     <PlusCircleIcon className="absolute top-0 right-0 cursor-pointer" onClick={() => setIsOpen(true)}/>}
 
                 {isOpen && props.isAdmin && availableShiftsToAssign.length > 0 && (
