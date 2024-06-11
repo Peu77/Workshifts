@@ -23,7 +23,7 @@ const App = () => {
             for (let i = 1; i <= lastDay.getDate(); i++) {
                 const date = new Date(today.getFullYear(), today.getMonth(), i)
                 newDays.push({
-                    name: date.toLocaleDateString('de', {weekday: 'long'}),
+                    name: date.toLocaleDateString('de', {weekday: 'short'}),
                     date: date
                 })
             }
@@ -32,13 +32,13 @@ const App = () => {
             for (let i = 0; i < 7; i++) {
                 const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - day + i)
                 newDays.push({
-                    name: date.toLocaleDateString('de', {weekday: 'long'}),
+                    name: date.toLocaleDateString('de', {weekday: 'short'}),
                     date: date
                 })
             }
         }
 
-        return newDays
+        return newDays.filter(day => day.name !== "Sa" && day.name !== "So")
     }, [timeRange]);
 
     if (isLoading) {
@@ -76,7 +76,7 @@ const App = () => {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <div className="flex gap-4 flex-wrap items-start">
+                <div className="flex gap-4 flex-wrap items-start ">
                     {weekDays.map((day) => (
                         <Day key={day.date.toISOString()} defaultOpen={timeRange === "1"} name={day.name}
                              date={day.date} isAdmin={isAdmin}

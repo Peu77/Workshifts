@@ -35,7 +35,7 @@ export default (props: ShiftDayProps) => {
     }, [shiftsDays.data]);
 
     return (
-        <Card className={cn("flex-grow min-w-[300px] max-w-[400px] relative", props.isToday ? "border-blue-400" : "")}>
+        <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
                 <CardTitle>{props.name}</CardTitle>
                 <CardDescription>{props.date?.toDateString()}</CardDescription>
