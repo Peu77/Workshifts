@@ -64,12 +64,12 @@ export class UserService {
         return this.userRepository.delete({id});
     }
 
-    createUser(name: string, email: string) {
+    createUser(name: string, email: string, password: string) {
         const user = new UserEntity();
         user.name = name;
         user.email = email;
         user.role = UserRole.USER;
-        user.password = hashSync("password", genSaltSync(10));
+        user.password = hashSync(password, genSaltSync(10));
         return this.userRepository.save(user);
     }
 }

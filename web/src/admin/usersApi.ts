@@ -61,7 +61,8 @@ export function useCreateUser() {
         mutationKey: ["createUser"],
         mutationFn: async (user: {
             name: string,
-            email: string
+            email: string,
+            password: string
         }) => {
             const response = await api.post("/user/user", user)
             return response.data

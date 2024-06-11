@@ -1,6 +1,6 @@
 import {DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
-import { z} from "zod";
+import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FormControl, FormField, FormItem, Form, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -13,6 +13,7 @@ import {useCreateUser} from "@/admin/usersApi";
 const formSchema = z.object({
     name: z.string().nonempty(),
     email: z.string().email(),
+    password: z.string().nonempty()
 })
 
 
@@ -70,6 +71,18 @@ export const CreateUser = () => {
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input {...field} type="email"/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )
+                        }}/>
+
+                        <FormField control={form.control} name={"password"} render={({field}) => {
+                            return (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} type="text"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
