@@ -19,6 +19,7 @@ export interface Shift {
     endTime: ShiftTime,
 
     minEmployees: number
+    wholeDay: boolean
 }
 
 export function useGetShifts() {
@@ -53,18 +54,16 @@ export function useDeleteShift() {
 export interface ShiftDto {
     id?: number
     name: string;
-
     minEmployees: number;
-
     startTime: {
         hours: number;
         minutes: number;
     }
-
     endTime: {
         hours: number;
         minutes: number;
-    }
+    },
+    wholeDay: boolean
 }
 
 export function useCreateShift() {

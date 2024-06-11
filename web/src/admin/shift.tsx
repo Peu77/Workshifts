@@ -29,6 +29,7 @@ export const ShiftCell = (shift: Shift) => {
             <TableCell>{getFormatedTime(shift.startTime)}</TableCell>
             <TableCell>{getFormatedTime(shift.endTime)}</TableCell>
             <TableCell>{shift.minEmployees}</TableCell>
+            <TableCell>{shift.wholeDay ? "Yes" : "No"}</TableCell>
             <TableCell className="flex">
                 <Button size="icon" variant="ghost">
                     <EditIcon onClick={() => setDialog(<EditShift {...shift}/>)}/>

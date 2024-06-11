@@ -1,4 +1,4 @@
-import {IsDate, IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsBoolean, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import {ShiftTime} from "../entities/shift.entity";
 
 export class ShiftDto {
@@ -14,4 +14,7 @@ export class ShiftDto {
 
     @IsNumber()
     minEmployees: number
+
+    @IsBoolean()
+    wholeDay: boolean
 }

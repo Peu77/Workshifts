@@ -23,6 +23,7 @@ export const Shifts = () => {
                             <TableHead>start</TableHead>
                             <TableHead>end</TableHead>
                             <TableHead>min employees</TableHead>
+                            <TableHead>wholeDay</TableHead>
                             <TableHead>actions</TableHead>
                         </TableRow>
                     </TableHeader>

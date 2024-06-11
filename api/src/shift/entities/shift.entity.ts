@@ -48,6 +48,9 @@ export class ShiftEntity {
 
     @Column()
     minEmployees: number;
+
+    @Column({default: false})
+    wholeDay: boolean;
 }
 
 export interface ShiftTime {

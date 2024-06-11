@@ -17,12 +17,13 @@ export class ShiftService {
 
     DAYS_BEFORE_ABLE_TO_QUIT = this.configService.getOrThrow<number>("DAYS_BEFORE_ABLE_TO_QUIT")
 
-    async create(name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
+    async create(name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number, wholeDay: boolean) {
         const shift = new ShiftEntity();
         shift.name = name;
         shift.startTime = startTime
         shift.endTime = endTime
         shift.minEmployees = minEmployees;
+        shift.wholeDay = wholeDay;
 
         return this.shiftRepository.save(shift);
     }
@@ -105,7 +106,7 @@ export class ShiftService {
         return this.shiftRepository.delete(id);
     }
 
-    update(id: any, name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number) {
-        return this.shiftRepository.update(id, {name, startTime, endTime, minEmployees});
+    update(id: any, name: string, startTime: ShiftTime, endTime: ShiftTime, minEmployees: number, wholeDay: boolean) {
+        return this.shiftRepository.update(id, {name, startTime, endTime, minEmployees, wholeDay});
     }
 }

@@ -9,12 +9,14 @@ import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {getFormatedTime, Shift, ShiftDto, useUpdateShift} from "@/admin/shiftsApi";
+import {Switch} from "@/components/ui/switch.tsx";
 
 const formSchema = z.object({
     name: z.string().min(3),
     startTime: z.string().time(),
     endTime: z.string().time(),
-    minEmployees: number()
+    minEmployees: number(),
+    wholeDay: z.boolean().default(false)
 })
 
 
@@ -25,9 +27,12 @@ export const EditShift = (shift: Shift) => {
             name: shift.name,
             startTime: getFormatedTime(shift.startTime) + ":00",
             endTime: getFormatedTime(shift.endTime) + ":00",
-            minEmployees: shift.minEmployees
+            minEmployees: shift.minEmployees,
+            wholeDay: shift.wholeDay
         }
     })
+
+    console.log(shift)
 
     const {setDialog} = useContext(DialogContext)
     const {toast} = useToast()
@@ -44,7 +49,8 @@ export const EditShift = (shift: Shift) => {
             name: data.name.toString(),
             minEmployees: data.minEmployees,
             startTime: parseTime(data.startTime),
-            endTime: parseTime(data.endTime)
+            endTime: parseTime(data.endTime),
+            wholeDay: data.wholeDay
         }
 
         updateShiftMutation.mutateAsync(dto).then(() => {
@@ -64,6 +70,7 @@ export const EditShift = (shift: Shift) => {
         })
     }
 
+    const wholeDay = form.watch("wholeDay")
     return (
         <DialogContent>
             <Form {...form}>
@@ -85,33 +92,61 @@ export const EditShift = (shift: Shift) => {
                             )
                         }}/>
 
-                        <FormField control={form.control} name={"startTime"} render={({field}) => {
+                        <FormField control={form.control} name={"wholeDay"} render={({field}) => {
                             return (
                                 <FormItem>
-                                    <FormLabel>Start</FormLabel>
+                                    <FormLabel>WholeDay</FormLabel>
                                     <FormControl>
-                                        <Input {...field} onChange={e => {
-                                            field.onChange(e.target.value + ":00")
-                                        }} type="time"/>
+                                        <div>
+                                            <Switch onCheckedChange={(wholeDay) => {
+                                                if (wholeDay) {
+                                                    form.setValue("startTime", "00:00:00")
+                                                    form.setValue("endTime", "23:59:59")
+                                                } else {
+                                                    form.setValue("startTime", "")
+                                                    form.setValue("endTime", "")
+                                                }
+
+                                                field.onChange(wholeDay)
+                                            }} checked={field.value}/>
+                                        </div>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
                             )
                         }}/>
 
-                        <FormField control={form.control} name={"endTime"} render={({field}) => {
-                            return (
-                                <FormItem>
-                                    <FormLabel>Start</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} onChange={e => {
-                                            field.onChange(e.target.value + ":00")
-                                        }} type="time"/>
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )
-                        }}/>
+                        {!wholeDay && (
+                            <>
+                                <FormField control={form.control} name={"startTime"} render={({field}) => {
+                                    return (
+                                        <FormItem>
+                                            <FormLabel>Start</FormLabel>
+                                            <FormControl>
+                                                <Input defaultValue={field.value} onChange={e => {
+                                                    field.onChange(e.target.value + ":00")
+                                                }} type="time"/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )
+                                }}/>
+
+                                <FormField control={form.control} name={"endTime"} render={({field}) => {
+                                    return (
+                                        <FormItem>
+                                            <FormLabel>End</FormLabel>
+                                            <FormControl>
+                                                <Input defaultValue={field.value} onChange={e => {
+                                                    field.onChange(e.target.value + ":00")
+                                                }} type="time"/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )
+                                }}/>
+                            </>
+                        )}
 
                         <FormField control={form.control} name={"minEmployees"} render={({field}) => {
                             return (

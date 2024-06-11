@@ -28,9 +28,9 @@ export class ShiftController {
 
     @UseGuards(AdminGuard)
     @Post()
-    async createShift(@Body() {name, startTime, endTime, minEmployees}: ShiftDto) {
+    async createShift(@Body() {name, startTime, endTime, minEmployees, wholeDay}: ShiftDto) {
         try {
-            return this.shiftService.create(name, startTime, endTime, minEmployees);
+            return this.shiftService.create(name, startTime, endTime, minEmployees, wholeDay);
         } catch (e) {
             throw new BadRequestException(e.message)
         }
@@ -48,9 +48,15 @@ export class ShiftController {
 
     @UseGuards(AdminGuard)
     @Put(":id")
-    async updateShift(@Param("id", ParseIntPipe) id: number, @Body() {name, startTime, endTime, minEmployees}: ShiftDto) {
+    async updateShift(@Param("id", ParseIntPipe) id: number, @Body() {
+        name,
+        startTime,
+        endTime,
+        minEmployees,
+        wholeDay
+    }: ShiftDto) {
         try {
-            return this.shiftService.update(id, name, startTime, endTime, minEmployees);
+            return this.shiftService.update(id, name, startTime, endTime, minEmployees, wholeDay);
         } catch (e) {
             throw new BadRequestException(e.message)
         }
