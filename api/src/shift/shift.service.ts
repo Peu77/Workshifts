@@ -75,6 +75,11 @@ export class ShiftService {
 
         const now = new Date();
         const diff = (shiftDayEntity.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+
+        if (diff < 0) {
+            throw new Error(`Cannot quit shift in the past`)
+        }
+
         if (diff < this.DAYS_BEFORE_ABLE_TO_QUIT) {
             throw new Error(`Cannot quit shift ${this.DAYS_BEFORE_ABLE_TO_QUIT} days before`)
         }

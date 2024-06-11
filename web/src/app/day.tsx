@@ -3,7 +3,7 @@ import {Shift} from "@/admin/shiftsApi.ts";
 import {ShiftDay, useAddShiftToDay, useGetShiftsForDay} from "@/app/shiftDayApi.ts";
 import {cn} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
-import {MinusCircleIcon, PlusCircleIcon} from "lucide-react";
+import {MinusCircleIcon, PlusCircleIcon, TrafficConeIcon} from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useMemo, useState} from "react";
 import ShiftOnDay from "./shiftOnDay";
@@ -46,10 +46,19 @@ export default (props: ShiftDayProps) => {
         return Math.ceil(diff / 7)
     }, [props.date, props.name]);
 
+    const allShiftsMinEmployees = useMemo<boolean>(() => {
+        if (!shiftsDays.data) return false
+
+        return shiftsDays.data.every(shiftDay => shiftDay.users.length >= shiftDay.shift.minEmployees)
+    }, [shiftsDays])
+
     return (
         <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
-                <CardTitle className="text-sm lg:text-lg">{props.name}</CardTitle>
+                <CardTitle className="text-sm lg:text-lg flex gap-2">
+                    {props.name}
+                    {!allShiftsMinEmployees && <TrafficConeIcon className="text-red-400"/>}
+                </CardTitle>
                 <CardDescription>{props.date?.toDateString()}</CardDescription>
 
                 {weekOfMonth && <p className="absolute top-0 left-2 font-bold">{weekOfMonth}</p>}
