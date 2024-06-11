@@ -14,7 +14,7 @@ const formSchema = z.object({
     name: z.string().min(3),
     startTime: z.string().time(),
     endTime: z.string().time(),
-    minEmployees: number().min(1)
+    minEmployees: number()
 })
 
 
