@@ -1,10 +1,10 @@
 import {Button} from "@/components/ui/button.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
-import {CreateShift} from "@/admin/dialog/createShift.tsx";
-import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {ShiftCell} from "@/admin/shift";
-import {useGetShifts} from "@/admin/shiftsApi";
+import {CreateShift} from "@/routes/admin/dialog/createShift.tsx";
+import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
+import {ShiftCell} from "@/routes/admin/shift.tsx";
+import {useGetShifts} from "@/routes/admin/shiftsApi.ts";
 
 export const Shifts = () => {
     const {setDialog} = useContext(DialogContext)

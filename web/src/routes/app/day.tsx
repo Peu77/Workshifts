@@ -1,12 +1,13 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Shift} from "@/admin/shiftsApi.ts";
-import {ShiftDay, useAddShiftToDay, useGetShiftsForDay} from "@/app/shiftDayApi.ts";
+import {Shift} from "@/routes/admin/shiftsApi.ts";
+import {ShiftDay, useAddShiftToDay, useGetShiftsForDay} from "@/routes/app/shiftDayApi.ts";
 import {cn} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {MinusCircleIcon, PlusCircleIcon, TrafficConeIcon} from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useMemo, useState} from "react";
-import ShiftOnDay from "./shiftOnDay";
+import ShiftOnDay from "./shiftOnDay.tsx";
+import {useGetVacationsOnDay} from "@/routes/vacation/vacationApi.tsx";
 
 interface ShiftDayProps {
     name: string,
@@ -19,6 +20,7 @@ interface ShiftDayProps {
 
 export default (props: ShiftDayProps) => {
     const shiftsDays = useGetShiftsForDay(props.date)
+    const vacations = useGetVacationsOnDay(props.date)
     const addShiftToDayMutation = useAddShiftToDay(props.date)
     const [selectedShift, setSelectedShift] = useState<string | null>(null)
     const [isOpen, setIsOpen] = useState(props.defaultOpen)
@@ -99,6 +101,13 @@ export default (props: ShiftDayProps) => {
                         {shiftsDays.isError && <p>Error</p>}
 
                         <div className="space-y-4">
+                            {vacations.data && vacations.data.map(vacation => (
+                                <div key={vacation.id} className="bg-yellow-200 p-2 rounded-lg">
+                                    <p>{vacation.user.name}</p>
+                                    <p>{vacation.startDate.toLocaleDateString("de")} - {vacation.endDate.toLocaleDateString("de")}</p>
+                                </div>
+                            ))}
+
                             {shiftsDays.data && shiftsDays.data.sort((a, b) => a.shift.startTime.hours - b.shift.startTime.hours).map((shiftDay: ShiftDay) => (
                                 <ShiftOnDay key={shiftDay.id} shiftDay={shiftDay} isAdmin={props.isAdmin}
                                             date={props.date}/>

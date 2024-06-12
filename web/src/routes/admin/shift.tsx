@@ -1,12 +1,12 @@
-import {TableCell, TableRow} from "@/components/ui/table";
-import {Button} from "@/components/ui/button";
+import {TableCell, TableRow} from "@/components/ui/table.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {EditIcon, TrashIcon} from "lucide-react";
 import {ColorRing} from "react-loader-spinner";
-import {getFormatedTime, Shift, useDeleteShift} from "@/admin/shiftsApi";
-import {useToast} from "@/components/ui/use-toast";
+import {getFormatedTime, Shift, useDeleteShift} from "@/routes/admin/shiftsApi.ts";
+import {useToast} from "@/components/ui/use-toast.ts";
 import {useContext} from "react";
-import {DialogContext} from "@/provider/DialogProvider";
-import {EditShift} from "@/admin/dialog/editShift";
+import {DialogContext} from "@/provider/DialogProvider.tsx";
+import {EditShift} from "@/routes/admin/dialog/editShift.tsx";
 
 export const ShiftCell = (shift: Shift) => {
     const deleteShiftMutation = useDeleteShift();

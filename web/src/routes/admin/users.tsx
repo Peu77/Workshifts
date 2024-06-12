@@ -1,10 +1,10 @@
-import {useGetUsers} from "@/admin/usersApi";
-import {Button} from "@/components/ui/button";
-import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {DialogContext} from "@/provider/DialogProvider";
+import {useGetUsers} from "@/routes/admin/usersApi.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
+import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useContext} from "react";
-import {UserCell} from "@/admin/user";
-import {CreateUser} from "@/admin/dialog/createUser";
+import {UserCell} from "@/routes/admin/user.tsx";
+import {CreateUser} from "@/routes/admin/dialog/createUser.tsx";
 
 export const Users = () => {
     const users = useGetUsers()

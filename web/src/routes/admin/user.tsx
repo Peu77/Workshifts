@@ -1,7 +1,7 @@
-import {useDeleteUser, User} from "@/admin/usersApi";
-import {TableCell, TableRow} from "@/components/ui/table";
+import {useDeleteUser, User} from "@/routes/admin/usersApi.ts";
+import {TableCell, TableRow} from "@/components/ui/table.tsx";
 import { TrashIcon} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@/components/ui/button.tsx";
 import {ColorRing} from "react-loader-spinner";
 
 export const UserCell = (user: User) => {

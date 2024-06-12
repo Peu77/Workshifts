@@ -1,4 +1,4 @@
-import api from "@/api";
+import api from "@/api.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 const KEY = "users"

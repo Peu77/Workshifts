@@ -11,7 +11,7 @@ export class ShiftService {
     constructor(
         @InjectRepository(ShiftEntity) private shiftRepository: Repository<ShiftEntity>,
         @InjectRepository(ShiftDayEntity) private shiftDayRepository: Repository<ShiftDayEntity>,
-        private configService: ConfigService
+        private configService: ConfigService,
     ) {
     }
 

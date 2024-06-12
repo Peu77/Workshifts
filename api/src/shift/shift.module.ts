@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ShiftEntity} from "./entities/shift.entity";
 import {UserModule} from "../user/user.module";
 import {ShiftDayEntity} from "./entities/shiftDay.entity";
+import {VacationModule} from "../vacation/vacation.module";
 
 
 @Module({

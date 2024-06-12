@@ -9,9 +9,10 @@ import "./globals.css"
 import Login from "@/auth/Login.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {Toaster} from "@/components/ui/toaster.tsx";
-import App from "@/app/App.tsx";
-import {Admin} from "@/admin/Admin.tsx";
+import App from "@/routes/app/App.tsx";
+import {Admin} from "@/routes/admin/Admin.tsx";
 import DialogProvider from "@/provider/DialogProvider.tsx";
+import Vacation from "@/routes/vacation/vacation.tsx";
 
 
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: <Admin/>
+    },
+    {
+        path: "/vacation",
+        element: <Vacation/>
     },
     {
         path: "*",

@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import { ShiftModule } from './shift/shift.module';
 import { UserModule } from './user/user.module';
+import { VacationModule } from './vacation/vacation.module';
 
 @Module({
     imports: [ConfigModule.forRoot({
@@ -27,7 +28,8 @@ import { UserModule } from './user/user.module';
             })
         }),
         ShiftModule,
-        UserModule
+        UserModule,
+        VacationModule
     ],
     controllers: [AppController],
     providers: [AppService],

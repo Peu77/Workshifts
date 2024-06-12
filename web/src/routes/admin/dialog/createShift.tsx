@@ -1,14 +1,14 @@
-import {DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
+import {DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {number, z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FormControl, FormField, FormItem, Form, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useToast} from "@/components/ui/use-toast.ts";
-import {getFormatedTime, Shift, ShiftDto, useUpdateShift} from "@/admin/shiftsApi";
+import {ShiftDto, useCreateShift} from "@/routes/admin/shiftsApi.ts";
 import {Switch} from "@/components/ui/switch.tsx";
 
 const formSchema = z.object({
@@ -20,23 +20,14 @@ const formSchema = z.object({
 })
 
 
-export const EditShift = (shift: Shift) => {
+export const CreateShift = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: shift.name,
-            startTime: getFormatedTime(shift.startTime) + ":00",
-            endTime: getFormatedTime(shift.endTime) + ":00",
-            minEmployees: shift.minEmployees,
-            wholeDay: shift.wholeDay
-        }
     })
-
-    console.log(shift)
 
     const {setDialog} = useContext(DialogContext)
     const {toast} = useToast()
-    const updateShiftMutation = useUpdateShift();
+    const createShiftMutation = useCreateShift();
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         function parseTime(time: string): { hours: number, minutes: number } {
@@ -45,7 +36,6 @@ export const EditShift = (shift: Shift) => {
         }
 
         const dto: ShiftDto = {
-            id: shift.id,
             name: data.name.toString(),
             minEmployees: data.minEmployees,
             startTime: parseTime(data.startTime),
@@ -53,10 +43,10 @@ export const EditShift = (shift: Shift) => {
             wholeDay: data.wholeDay
         }
 
-        updateShiftMutation.mutateAsync(dto).then(() => {
+        createShiftMutation.mutateAsync(dto).then(() => {
             toast({
                 title: "Success",
-                description: "Shift updated successfully."
+                description: "Shift created successfully."
             })
 
             setDialog(null)
@@ -71,12 +61,22 @@ export const EditShift = (shift: Shift) => {
     }
 
     const wholeDay = form.watch("wholeDay")
+    useEffect(() => {
+        if (wholeDay) {
+            form.setValue("startTime", "00:00:00")
+            form.setValue("endTime", "23:59:59")
+        } else {
+            form.setValue("startTime", "")
+            form.setValue("endTime", "")
+        }
+    }, [wholeDay]);
+
     return (
         <DialogContent>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Edit Shift</DialogTitle>
+                        <DialogTitle>Create Shift</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
@@ -98,17 +98,7 @@ export const EditShift = (shift: Shift) => {
                                     <FormLabel>WholeDay</FormLabel>
                                     <FormControl>
                                         <div>
-                                            <Switch onCheckedChange={(wholeDay) => {
-                                                if (wholeDay) {
-                                                    form.setValue("startTime", "00:00:00")
-                                                    form.setValue("endTime", "23:59:59")
-                                                } else {
-                                                    form.setValue("startTime", "")
-                                                    form.setValue("endTime", "")
-                                                }
-
-                                                field.onChange(wholeDay)
-                                            }} checked={field.value}/>
+                                            <Switch onCheckedChange={field.onChange} checked={field.value}/>
                                         </div>
                                     </FormControl>
                                     <FormMessage/>
@@ -123,7 +113,7 @@ export const EditShift = (shift: Shift) => {
                                         <FormItem>
                                             <FormLabel>Start</FormLabel>
                                             <FormControl>
-                                                <Input defaultValue={field.value} onChange={e => {
+                                                <Input onChange={e => {
                                                     field.onChange(e.target.value + ":00")
                                                 }} type="time"/>
                                             </FormControl>
@@ -137,7 +127,7 @@ export const EditShift = (shift: Shift) => {
                                         <FormItem>
                                             <FormLabel>End</FormLabel>
                                             <FormControl>
-                                                <Input defaultValue={field.value} onChange={e => {
+                                                <Input onChange={e => {
                                                     field.onChange(e.target.value + ":00")
                                                 }} type="time"/>
                                             </FormControl>
@@ -148,12 +138,13 @@ export const EditShift = (shift: Shift) => {
                             </>
                         )}
 
+
                         <FormField control={form.control} name={"minEmployees"} render={({field}) => {
                             return (
                                 <FormItem>
                                     <FormLabel>minEmployees</FormLabel>
                                     <FormControl>
-                                        <Input {...field} onChange={e => {
+                                        <Input onChange={e => {
                                             const parsed = parseInt(e.target.value)
                                             field.onChange(isNaN(parsed) ? "" : parsed)
                                         }} type="number"/>
@@ -166,7 +157,7 @@ export const EditShift = (shift: Shift) => {
                     </div>
 
                     <DialogFooter className="mt-4">
-                        <Button type="submit">edit</Button>
+                        <Button type="submit">create</Button>
                     </DialogFooter>
                 </form>
             </Form>

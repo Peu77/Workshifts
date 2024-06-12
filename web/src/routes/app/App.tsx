@@ -1,12 +1,12 @@
 import {Oval} from "react-loader-spinner";
-import Day from "@/app/day.tsx";
-import {useGetMe} from "@/admin/usersApi.ts";
-import {useGetShifts} from "@/admin/shiftsApi.ts";
+import Day from "@/routes/app/day.tsx";
+import {useGetMe} from "@/routes/admin/usersApi.ts";
+import {useGetShifts} from "@/routes/admin/shiftsApi.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useMemo, useState} from "react";
-import CopyShiftDays from "@/app/copyShiftDays.tsx";
+import CopyShiftDays from "@/routes/app/copyShiftDays.tsx";
 
 
 const App = () => {
@@ -82,6 +82,7 @@ const App = () => {
                 <h1>Welcome back, {data?.name}</h1>
                 {isAdmin && (
                     <div className="flex gap-4">
+                        <Button onClick={() => navigate("/vacation")}>vacation</Button>
                         <Button onClick={() => navigate("/admin")}>admin panel</Button>
                         <CopyShiftDays/>
                     </div>

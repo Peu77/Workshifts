@@ -1,5 +1,5 @@
-import {DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
+import {DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -8,7 +8,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useToast} from "@/components/ui/use-toast.ts";
-import {useCreateUser} from "@/admin/usersApi";
+import {useCreateUser} from "@/routes/admin/usersApi.ts";
 
 const formSchema = z.object({
     name: z.string().nonempty(),

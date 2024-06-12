@@ -5,7 +5,7 @@ import {useToast} from "@/components/ui/use-toast.ts";
 import api from "@/api.ts";
 import {DateRange} from "react-day-picker";
 import {useQueryClient} from "@tanstack/react-query";
-import {KEY} from "@/app/shiftDayApi.ts";
+import {KEY} from "@/routes/app/shiftDayApi.ts";
 
 export default () => {
     const [date, setDate] = useState<DateRange | null>(null)

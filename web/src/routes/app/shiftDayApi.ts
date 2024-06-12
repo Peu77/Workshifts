@@ -1,7 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "@/api.ts";
-import {User} from "@/admin/usersApi.ts";
-import {Shift} from "@/admin/shiftsApi.ts";
+import {User} from "@/routes/admin/usersApi.ts";
+import {Shift} from "@/routes/admin/shiftsApi.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {AxiosError} from "axios";
 

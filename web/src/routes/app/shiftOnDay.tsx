@@ -1,12 +1,11 @@
 import {cn} from "@/lib/utils.ts";
-import {getFormatedTime} from "@/admin/shiftsApi.ts";
+import {getFormatedTime} from "@/routes/admin/shiftsApi.ts";
 import {MinusCircleIcon} from "lucide-react";
-import {ShiftDay, useDeleteShiftFromDay, useJoinShiftDay, useQuitShiftDay} from "@/app/shiftDayApi.ts";
+import {ShiftDay, useDeleteShiftFromDay, useJoinShiftDay, useQuitShiftDay} from "@/routes/app/shiftDayApi.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useMemo} from "react";
-import {useGetMe} from "@/admin/usersApi.ts";
+import {useGetMe} from "@/routes/admin/usersApi.ts";
 import {ColorRing} from "react-loader-spinner";
-import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card.tsx";
 
 interface ShiftDayProps {
     shiftDay: ShiftDay,
@@ -57,22 +56,11 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
 
                 <h3>{shiftDay.shift.name}</h3>
                 <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
-                <HoverCard>
-                    <HoverCardTrigger>
-                        <p className="cursor-pointer hover:underline">Users: {shiftDay.users.length}/{shiftDay.shift.minEmployees}</p>
-                    </HoverCardTrigger>
-
-                    <HoverCardContent>
-                        {shiftDay.users.length === 0 && <p>No users assigned</p>}
-                        <ul>
-                            {shiftDay.users.map(user => <li className="flex gap-4" key={user.id}>
-                                <p>{user.name}</p>
-                                <p> {user.email}</p>
-                            </li>)}
-                        </ul>
-                    </HoverCardContent>
-                </HoverCard>
-
+                <ul className="">
+                    {shiftDay.users.map(user => <li className="flex gap-4" key={user.id}>
+                        <p>- {user.name}</p>
+                    </li>)}
+                </ul>
 
                 {(joinShiftDayMutation.isPending || quitShiftDayMutation.isPending) ? <ColorRing
                     visible={true}
