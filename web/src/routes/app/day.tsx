@@ -8,6 +8,8 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {useMemo, useState} from "react";
 import ShiftOnDay from "./shiftOnDay.tsx";
 import {useGetVacationsOnDay} from "@/routes/vacation/vacationApi.tsx";
+import {getWeekOfYear} from "@/utils.ts";
+import {useSearchParams} from "react-router-dom";
 
 interface ShiftDayProps {
     name: string,
@@ -15,7 +17,6 @@ interface ShiftDayProps {
     shifts: Shift[],
     isToday: boolean
     isAdmin: boolean,
-    defaultOpen: boolean
 }
 
 export default (props: ShiftDayProps) => {
@@ -23,7 +24,7 @@ export default (props: ShiftDayProps) => {
     const vacations = useGetVacationsOnDay(props.date)
     const addShiftToDayMutation = useAddShiftToDay(props.date)
     const [selectedShift, setSelectedShift] = useState<string | null>(null)
-    const [isOpen, setIsOpen] = useState(props.defaultOpen)
+    const [searchParams, setSearchParams] = useSearchParams()
 
     function addShiftToDay() {
         if (!selectedShift) return
@@ -36,16 +37,10 @@ export default (props: ShiftDayProps) => {
         return props.shifts.filter(shift => !shiftsDays.data?.some(shiftDay => shiftDay.shift.id === shift.id))
     }, [shiftsDays.data]);
 
-    const weekOfMonth = useMemo<number | undefined>(() => {
+    const weekOfYear = useMemo<number | undefined>(() => {
         if (!props.date) return
-        if (props.name !== "Mo") return
 
-        const firstDay = new Date(props.date.getFullYear(), props.date.getMonth(), 1)
-        const dayOfWeek = firstDay.getDay()
-        const firstWeekDay = firstDay.getDate() - dayOfWeek
-        const diff = props.date.getDate() - firstWeekDay
-
-        return Math.ceil(diff / 7)
+        return getWeekOfYear(props.date)
     }, [props.date, props.name]);
 
     const allShiftsMinEmployees = useMemo<boolean>(() => {
@@ -53,6 +48,38 @@ export default (props: ShiftDayProps) => {
 
         return shiftsDays.data.every(shiftDay => shiftDay.users.length >= shiftDay.shift.minEmployees)
     }, [shiftsDays])
+
+    function open() {
+        if (!weekOfYear) return
+        setSearchParams(prev => {
+            const openWeeks = prev.get("openWeeks")?.split(",") || []
+            openWeeks.push(weekOfYear.toString())
+            prev.set("openWeeks", openWeeks.join(","))
+            return prev;
+        })
+    }
+
+    function close() {
+        if (!weekOfYear) return
+
+        setSearchParams(prev => {
+            const openWeeks = prev.get("openWeeks")?.split(",") || []
+            prev.set("openWeeks", openWeeks.filter(week => week !== weekOfYear.toString()).join(","))
+            return prev;
+        })
+    }
+
+    const isWeekRange = useMemo(() => {
+        return searchParams.get("timeRange") === "1"
+    }, [searchParams]);
+
+    const isOpen = useMemo<boolean>(() => {
+        if (isWeekRange) return true;
+        if (!weekOfYear) return false;
+
+        const openWeeks = searchParams.get("openWeeks")?.split(",") || []
+        return openWeeks.includes(weekOfYear.toString())
+    }, [searchParams])
 
     return (
         <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
@@ -63,11 +90,26 @@ export default (props: ShiftDayProps) => {
                 </CardTitle>
                 <CardDescription>{props.date?.toLocaleDateString("de")}</CardDescription>
 
-                {weekOfMonth && <p className="absolute top-0 left-2 font-bold">{weekOfMonth}</p>}
+                {props.name === "Mo" && weekOfYear && (
+                    <>
+                        {<p onClick={() => {
+                            setSearchParams(prev => {
+                                prev.set("week", weekOfYear.toString())
+                                prev.set("timeRange", "1")
+                                return prev;
+                            })
+                        }}
+                            className="cursor-pointer hover:scale-125 absolute top-0 left-2 font-bold">{weekOfYear + 1}</p>}
 
-                {isOpen ? <MinusCircleIcon className="absolute top-0 right-0 cursor-pointer"
-                                           onClick={() => setIsOpen(false)}/> :
-                    <PlusCircleIcon className="absolute top-0 right-0 cursor-pointer" onClick={() => setIsOpen(true)}/>}
+                        {!isWeekRange && (
+                            isOpen ? <MinusCircleIcon className="absolute top-0 right-0 cursor-pointer"
+                                                      onClick={close}/> :
+                                <PlusCircleIcon className="absolute top-0 right-0 cursor-pointer"
+                                                onClick={open}/>
+                        )}
+
+                    </>
+                )}
 
                 {isOpen && props.isAdmin && availableShiftsToAssign.length > 0 && (
                     <div className="flex gap-2">
