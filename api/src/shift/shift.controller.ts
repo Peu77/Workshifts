@@ -16,12 +16,14 @@ import {AuthGuard, UserParam} from "../user/guards/authGuard";
 import {AdminGuard} from "../user/guards/adminGuard";
 import {ShiftDayEntity} from "./entities/shiftDay.entity";
 import {UserEntity} from "../user/entities/user.entity";
+import {UserService} from "../user/user.service";
 
 @UseGuards(AuthGuard)
 @Controller('shift')
 export class ShiftController {
     constructor(
-        private readonly shiftService: ShiftService
+        private readonly shiftService: ShiftService,
+        private readonly userService: UserService,
     ) {
     }
 
@@ -103,6 +105,34 @@ export class ShiftController {
 
     @Put("shiftDay/:id/quit")
     async quitShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @UserParam() user: UserEntity) {
+        try {
+            return await this.shiftService.quitShiftDay(shiftDay, user);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
+    @Put("shiftDay/:id/assign/:userId")
+    async assignUserToShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @Param("userId", ParseIntPipe) userId: number) {
+        const user = await this.userService.getUserById(userId);
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+
+        try {
+            return await this.shiftService.joinShiftDay(shiftDay, user);
+        } catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
+    @Put("shiftDay/:id/unassign/:userId")
+    async unassignUserToShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @Param("userId", ParseIntPipe) userId: number) {
+        const user = await this.userService.getUserById(userId);
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+
         try {
             return await this.shiftService.quitShiftDay(shiftDay, user);
         } catch (e) {
