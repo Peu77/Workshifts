@@ -1,6 +1,6 @@
 import {
     BadRequestException,
-    Body,
+    Body, ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -8,7 +8,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
-    UseGuards
+    UseGuards, UseInterceptors
 } from '@nestjs/common';
 import {ShiftDto} from "./dtos/shiftDto";
 import {ShiftService} from "./shift.service";
@@ -18,6 +18,7 @@ import {ShiftDayEntity} from "./entities/shiftDay.entity";
 import {UserEntity} from "../user/entities/user.entity";
 import {UserService} from "../user/user.service";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(AuthGuard)
 @Controller('shift')
 export class ShiftController {
@@ -112,6 +113,7 @@ export class ShiftController {
         }
     }
 
+    @UseGuards(AdminGuard)
     @Put("shiftDay/:id/assign/:userId")
     async assignUserToShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @Param("userId", ParseIntPipe) userId: number) {
         const user = await this.userService.getUserById(userId);
@@ -126,6 +128,7 @@ export class ShiftController {
         }
     }
 
+    @UseGuards(AdminGuard)
     @Put("shiftDay/:id/unassign/:userId")
     async unassignUserToShiftDay(@Param("id", ParseIntPipe) shiftDay: number, @Param("userId", ParseIntPipe) userId: number) {
         const user = await this.userService.getUserById(userId);
@@ -134,7 +137,7 @@ export class ShiftController {
         }
 
         try {
-            return await this.shiftService.quitShiftDay(shiftDay, user);
+            return await this.shiftService.quitShiftDay(shiftDay, user, true);
         } catch (e) {
             throw new BadRequestException(e.message)
         }

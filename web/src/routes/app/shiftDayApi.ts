@@ -117,3 +117,53 @@ export function useQuitShiftDay(date: Date) {
         }
     })
 }
+
+export function useAssignUserToShiftDay(date: Date) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["assignUserToShiftDay"],
+        mutationFn: async (data: {
+            shiftDayId: number,
+            user: User
+        }) => {
+            await api.put(`/shift/shiftDay/${data.shiftDayId}/assign/${data.user.id}`)
+            return data
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
+                return old ? old.map(shiftDay => {
+                    if (shiftDay.id === data.shiftDayId) {
+                        return {...shiftDay, users: [...shiftDay.users, data.user]}
+                    }
+                    return shiftDay
+                }) : old
+            })
+        }
+    })
+}
+
+export function useUnassignUserToShiftDay(date: Date) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["unassignUserToShiftDay"],
+        mutationFn: async (data: {
+            shiftDayId: number,
+            user: User
+        }) => {
+            await api.put(`/shift/shiftDay/${data.shiftDayId}/unassign/${data.user.id}`)
+            return data
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
+                return old ? old.map(shiftDay => {
+                    if (shiftDay.id === data.shiftDayId) {
+                        return {...shiftDay, users: shiftDay.users.filter(user => user.id !== data.user.id)}
+                    }
+                    return shiftDay
+                }) : old
+            })
+        }
+    })
+}

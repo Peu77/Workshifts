@@ -1,9 +1,20 @@
-import {Body, Controller, Delete, Get, Param, Post, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    ClassSerializerInterceptor,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import {AuthGuard, UserParam} from "../user/guards/authGuard";
 import {VacationDto} from "./dtos/vacationDto";
 import {VacationService} from "./vacation.service";
 import {UserEntity} from "../user/entities/user.entity";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('vacation')
 @UseGuards(AuthGuard)
 export class VacationController {

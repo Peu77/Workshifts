@@ -57,7 +57,7 @@ export class ShiftService {
         return this.shiftDayRepository.save(shiftDayEntity);
     }
 
-    async quitShiftDay(shiftDay: number, user: UserEntity) {
+    async quitShiftDay(shiftDay: number, user: UserEntity, force: boolean = false) {
         const shiftDayEntity = await this.shiftDayRepository.findOne({
             where: {id: shiftDay},
             relations: ["users", "shift"]
@@ -70,18 +70,18 @@ export class ShiftService {
             throw new Error("User not found in shift day")
         }
 
-        if (shiftDayEntity.users.length <= shiftDayEntity.shift.minEmployees) {
+        if (shiftDayEntity.users.length <= shiftDayEntity.shift.minEmployees && !force) {
             throw new Error("Shift day has minimum employees")
         }
 
         const now = new Date();
         const diff = (shiftDayEntity.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
 
-        if (diff < 0) {
+        if (diff < 0 && !force) {
             throw new Error(`Cannot quit shift in the past`)
         }
 
-        if (diff < this.DAYS_BEFORE_ABLE_TO_QUIT) {
+        if (diff < this.DAYS_BEFORE_ABLE_TO_QUIT && !force) {
             throw new Error(`Cannot quit shift ${this.DAYS_BEFORE_ABLE_TO_QUIT} days before`)
         }
 

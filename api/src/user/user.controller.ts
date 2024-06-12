@@ -14,12 +14,12 @@ import {UserEntity} from "./entities/user.entity";
 import {AdminGuard} from "./guards/adminGuard";
 import {UserDto} from "./dtos/userDto";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {
     }
 
-    @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(AuthGuard)
     @Get("me")
     me(@UserParam() user: UserEntity) {
