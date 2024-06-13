@@ -58,8 +58,11 @@ const App = () => {
         />
     }
 
-    if (isError || !data)
+    if (isError || !data) {
+        navigate("/")
         return <h1>Error</h1>
+    }
+
 
     const isAdmin = data.role === "admin"
 
@@ -77,13 +80,16 @@ const App = () => {
         <>
             <div className="space-y-4 p-2">
                 <h1>Welcome back, {data?.name}</h1>
-                {isAdmin && (
-                    <div className="flex gap-4">
-                        <Button onClick={() => navigate("/vacation")}>vacation</Button>
-                        <Button onClick={() => navigate("/admin")}>admin panel</Button>
-                        <CopyShiftDays/>
-                    </div>
-                )}
+                <div className="flex gap-4">
+                    {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
+                    <Button onClick={() => navigate("/vacation")}>vacation</Button>
+                    <CopyShiftDays/>
+                    <Button variant="destructive" onClick={() => {
+                        localStorage.removeItem("token")
+                        navigate("/")
+                    }
+                    }>logout</Button>
+                </div>
 
 
                 <div className="flex gap-2">

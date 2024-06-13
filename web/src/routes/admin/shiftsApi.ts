@@ -26,7 +26,7 @@ export function useGetShifts() {
     return useQuery<Shift[]>({
         queryKey: [KEY],
         queryFn: async () => {
-            const response = await api.get("/shift")
+            const response = await api.get<Shift[]>("/shift")
             return response.data
         }
     })
