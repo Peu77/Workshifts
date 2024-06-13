@@ -86,9 +86,9 @@ export default (props: ShiftDayProps) => {
             <CardHeader>
                 <CardTitle className="text-sm lg:text-lg flex gap-2">
                     {props.name}
+                    <p>{props.date?.toLocaleDateString("de")}</p>
                     {!allShiftsMinEmployees && <TrafficConeIcon className="text-red-400"/>}
                 </CardTitle>
-                <CardDescription>{props.date?.toLocaleDateString("de")}</CardDescription>
 
                 {props.name === "Mo" && weekOfYear && (
                     <>
