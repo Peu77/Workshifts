@@ -13,14 +13,15 @@ export default (props: TimeRangeComponentProps) => {
     const today = new Date()
     const [searchParams, setSearchParams] = useSearchParams();
     const week = searchParams.get("week") || getWeekOfYear(today).toString()
+    const year = searchParams.get("year") || today.getFullYear().toString()
 
     useEffect(() => {
-        setSearchParams(prev => {
-            prev.set("timeRange", "1")
-            return prev;
-        })
+        if (searchParams.get("timeRange") !== "1")
+            setSearchParams(prev => {
+                prev.set("timeRange", "1")
+                return prev;
+            })
     }, [input]);
-
 
 
     function setWeek(value: string) {
@@ -30,9 +31,17 @@ export default (props: TimeRangeComponentProps) => {
         })
     }
 
+    function setToday() {
+        setSearchParams(prev => {
+            prev.set("week", getWeekOfYear(today).toString())
+            prev.set("year", today.getFullYear().toString())
+            return prev;
+        })
+    }
+
     const weekDays = useMemo(() => {
         let newDays: { name: string, date: Date }[] = []
-        const startOfYear = new Date(today.getFullYear(), 0, 1)
+        const startOfYear = new Date(parseInt(year), 0, 1)
         const startOfWeek = new Date(startOfYear.setDate(startOfYear.getDate() + (parseInt(week) * 7)))
 
         for (let i = 0; i < 7; i++) {
@@ -44,7 +53,7 @@ export default (props: TimeRangeComponentProps) => {
         }
 
         return newDays.filter(day => day.name !== "Sa" && day.name !== "So")
-    }, [week]);
+    }, [week, year]);
 
     function stepWeek(forward: boolean) {
         const newWeek = parseInt(week)
@@ -91,7 +100,7 @@ export default (props: TimeRangeComponentProps) => {
                     <StepForwardIcon onClick={() => stepWeek(true)}/>
                 </Button>
 
-                <Button onClick={() => setWeek(getWeekOfYear(today).toString())}>Today</Button>
+                <Button onClick={setToday}>Today</Button>
             </div>
 
 

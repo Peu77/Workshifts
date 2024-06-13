@@ -8,6 +8,7 @@ import {useSearchParams} from "react-router-dom";
 export default (props: TimeRangeComponentProps) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const month = searchParams.get("month") || new Date().getMonth().toString()
+    const year = searchParams.get("year") || new Date().getFullYear().toString()
     const today = new Date()
 
     function setMonth(value: string) {
@@ -17,17 +18,26 @@ export default (props: TimeRangeComponentProps) => {
         })
     }
 
+    function setToday() {
+        setSearchParams(prev => {
+            prev.set("month", today.getMonth().toString())
+            prev.set("year", today.getFullYear().toString())
+            return prev;
+        })
+    }
+
     const weekDays = useMemo(() => {
         let newDays: { name: string, date: Date }[] = []
 
         const monthIndex = parseInt(month)
-        const lastDay = new Date(today.getFullYear(), monthIndex, 0)
-        const firstDay = new Date(today.getFullYear(), monthIndex, 1)
+        const yearInt = parseInt(year)
+        const lastDay = new Date(yearInt, monthIndex, 0)
+        const firstDay = new Date(yearInt, monthIndex, 1)
 
         // fill up the first week with the last days of the previous month if the first day is not a monday or sunday or saturday
         if (firstDay.getDay() !== 1 && firstDay.getDay() !== 0 && firstDay.getDay() !== 6) {
             for (let i = 0; i < firstDay.getDay(); i++) {
-                const date = new Date(today.getFullYear(), monthIndex, 1 - firstDay.getDay() + i)
+                const date = new Date(yearInt, monthIndex, 1 - firstDay.getDay() + i)
                 newDays.push({
                     name: date.toLocaleDateString('de', {weekday: 'short'}),
                     date: date
@@ -35,7 +45,7 @@ export default (props: TimeRangeComponentProps) => {
             }
         }
         for (let i = 1; i < lastDay.getDate(); i++) {
-            const date = new Date(today.getFullYear(), monthIndex, i)
+            const date = new Date(yearInt, monthIndex, i)
             newDays.push({
                 name: date.toLocaleDateString('de', {weekday: 'short'}),
                 date: date
@@ -44,7 +54,7 @@ export default (props: TimeRangeComponentProps) => {
 
 
         return newDays.filter(day => day.name !== "Sa" && day.name !== "So")
-    }, [month]);
+    }, [month, year]);
 
     function stepWeek(forward: boolean) {
         const newMonth = parseInt(month)
@@ -100,7 +110,7 @@ export default (props: TimeRangeComponentProps) => {
                     <StepForwardIcon onClick={() => stepWeek(true)}/>
                 </Button>
 
-                <Button onClick={() => setMonth(today.getMonth().toString())}>Today</Button>
+                <Button onClick={setToday}>Today</Button>
             </div>
 
 

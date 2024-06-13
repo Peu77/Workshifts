@@ -8,6 +8,7 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import CopyShiftDays from "@/routes/app/copyShiftDays.tsx";
 import Week from "@/routes/app/week.tsx";
 import Month from "@/routes/app/month.tsx";
+import {Input} from "@/components/ui/input";
 
 export interface WeekDay {
     name: string,
@@ -22,6 +23,7 @@ const App = () => {
     const {data, isLoading, isError} = useGetMe();
     const [searchParams, setSearchParams] = useSearchParams();
     const timeRange = searchParams.get("timeRange") || "1"
+    const year = searchParams.get("year")
     const shifts = useGetShifts();
     const navigate = useNavigate();
     let today = new Date()
@@ -31,6 +33,17 @@ const App = () => {
             prev.set("timeRange", value)
             return prev;
         })
+    }
+
+    function setYear(value: string) {
+        setSearchParams(prev => {
+            prev.set("year", value)
+            return prev;
+        })
+    }
+
+    if (!year) {
+        setYear(today.getFullYear().toString())
     }
 
     if (isLoading) {
@@ -72,18 +85,24 @@ const App = () => {
                     </div>
                 )}
 
-                <Select onValueChange={setTimeRange} value={timeRange}>
-                    <SelectTrigger className="max-w-[160px]">
-                        <SelectValue placeholder="select time range"/>
-                    </SelectTrigger>
 
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem value="1">Week</SelectItem>
-                            <SelectItem value="2">Month</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                <div className="flex gap-2">
+                    <Select onValueChange={setTimeRange} value={timeRange}>
+                        <SelectTrigger className="max-w-[160px]">
+                            <SelectValue placeholder="select time range"/>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="1">Week</SelectItem>
+                                <SelectItem value="2">Month</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+
+                    <Input value={year} onChange={e => setYear(e.target.value)} type="number"
+                           className="max-w-[140px]"/>
+                </div>
 
                 {timeRange === "1" && <Week render={renderDays}/>}
                 {timeRange === "2" && <Month render={renderDays}/>}
