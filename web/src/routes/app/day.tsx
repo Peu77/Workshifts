@@ -1,4 +1,4 @@
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Shift} from "@/routes/admin/shiftsApi.ts";
 import {ShiftDay, useAddShiftToDay, useGetShiftsForDay} from "@/routes/app/shiftDayApi.ts";
 import {cn} from "@/lib/utils.ts";
@@ -10,6 +10,7 @@ import ShiftOnDay from "./shiftOnDay.tsx";
 import {useGetVacationsOnDay} from "@/routes/vacation/vacationApi.tsx";
 import {getWeekOfYear} from "@/utils.ts";
 import {useSearchParams} from "react-router-dom";
+import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card.tsx";
 
 interface ShiftDayProps {
     name: string,
@@ -38,7 +39,7 @@ export default (props: ShiftDayProps) => {
     }, [shiftsDays.data]);
 
     const weekOfYear = useMemo<number | undefined>(() => {
-        if (!props.date) return
+        if (!props.date) return undefined
 
         return getWeekOfYear(props.date)
     }, [props.date, props.name]);
@@ -50,7 +51,7 @@ export default (props: ShiftDayProps) => {
     }, [shiftsDays])
 
     function open() {
-        if (!weekOfYear) return
+        if (weekOfYear === undefined) return
         setSearchParams(prev => {
             const openWeeks = prev.get("openWeeks")?.split(",") || []
             openWeeks.push(weekOfYear.toString())
@@ -60,7 +61,7 @@ export default (props: ShiftDayProps) => {
     }
 
     function close() {
-        if (!weekOfYear) return
+        if (weekOfYear === undefined) return
 
         setSearchParams(prev => {
             const openWeeks = prev.get("openWeeks")?.split(",") || []
@@ -75,7 +76,7 @@ export default (props: ShiftDayProps) => {
 
     const isOpen = useMemo<boolean>(() => {
         if (isWeekRange) return true;
-        if (!weekOfYear) return false;
+        if (weekOfYear === undefined) return false;
 
         const openWeeks = searchParams.get("openWeeks")?.split(",") || []
         return openWeeks.includes(weekOfYear.toString())
@@ -90,7 +91,7 @@ export default (props: ShiftDayProps) => {
                     {!allShiftsMinEmployees && <TrafficConeIcon className="text-red-400"/>}
                 </CardTitle>
 
-                {props.name === "Mo" && weekOfYear && (
+                {props.name === "Mo" && weekOfYear !== undefined && (
                     <>
                         {<p onClick={() => {
                             setSearchParams(prev => {
@@ -139,16 +140,26 @@ export default (props: ShiftDayProps) => {
             <CardContent>
                 {isOpen && (
                     <>
-                        {shiftsDays.isLoading && <p>Loading...</p>}
-                        {shiftsDays.isError && <p>Error</p>}
+                    {shiftsDays.isLoading && <p>Loading...</p>}
+                    {shiftsDays.isError && <p>Error</p>}
 
                         <div className="space-y-4">
-                            {vacations.data && vacations.data.map(vacation => (
-                                <div key={vacation.id} className="bg-yellow-200 p-2 rounded-lg">
-                                    <p>{vacation.user.name}</p>
-                                    <p>{vacation.startDate.toLocaleDateString("de")} - {vacation.endDate.toLocaleDateString("de")}</p>
+                            {vacations.data && vacations.data.length > 0 && (
+                                <div className="bg-yellow-200 p-2 rounded-lg flex flex-wrap gap-4">
+                                    {vacations.data && vacations.data.map(vacation => (
+                                        <HoverCard key={vacation.id}>
+                                            <HoverCardTrigger>
+                                                <p className="hover:underline cursor-pointer">{vacation.user.name}</p>
+                                            </HoverCardTrigger>
+
+                                            <HoverCardContent>
+                                                <p>{vacation.startDate.toLocaleDateString("de")} - {vacation.endDate.toLocaleDateString("de")}</p>
+                                            </HoverCardContent>
+                                        </HoverCard>
+
+                                    ))}
                                 </div>
-                            ))}
+                            )}
 
                             {shiftsDays.data && shiftsDays.data.sort((a, b) => a.shift.startTime.hours - b.shift.startTime.hours).map((shiftDay: ShiftDay) => (
                                 <ShiftOnDay key={shiftDay.id} shiftDay={shiftDay} isAdmin={props.isAdmin}
