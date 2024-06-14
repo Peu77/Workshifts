@@ -126,17 +126,18 @@ export function useAssignUserToShiftDay(date: Date) {
         mutationFn: async (data: {
             shiftDayId: number,
             user: User
-        }) => {
-            await api.put(`/shift/shiftDay/${data.shiftDayId}/assign/${data.user.id}`)
+        }[]) => {
+            for (let assignment of data) {
+                await api.put(`/shift/shiftDay/${assignment.shiftDayId}/assign/${assignment.user.id}`)
+            }
+
             return data
         },
         onSuccess: (data) => {
             queryClient.setQueryData([KEY, date], (old: ShiftDay[] | undefined) => {
                 return old ? old.map(shiftDay => {
-                    if (shiftDay.id === data.shiftDayId) {
-                        return {...shiftDay, users: [...shiftDay.users, data.user]}
-                    }
-                    return shiftDay
+                    const assignments = data.filter(assignment => assignment.shiftDayId === shiftDay.id)
+                    return {...shiftDay, users: [...shiftDay.users, ...assignments.map(assignment => assignment.user)]}
                 }) : old
             })
         }

@@ -103,14 +103,11 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                                       }))}/>
 
                     <Button onClick={() => {
-                        selectedUsersToAssignState[0].forEach(user => {
-                            assignUserMutation.mutateAsync({
-                                shiftDayId: shiftDay.id,
-                                user: userList.data!.find(u => u.id === parseInt(user.value))!
-                            }).then(() => {
-                                selectedUsersToAssignState[1](prev => prev.filter(u => u.value !== user.value))
-                            })
-                        })
+                        assignUserMutation.mutate(selectedUsersToAssignState[0].map(u => ({
+                            shiftDayId: shiftDay.id,
+                            user: userList.data!.find(user => user.id === parseInt(u.value))!
+                        })))
+                        selectedUsersToAssignState[1]([])
                     }} size={"icon"}>
                         <PlusCircleIcon/>
                     </Button>
