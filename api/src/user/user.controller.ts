@@ -3,7 +3,7 @@ import {
     ClassSerializerInterceptor,
     Controller, Delete,
     Get, Param, ParseIntPipe,
-    Post,
+    Post, Put,
     UnauthorizedException,
     UseGuards, UseInterceptors
 } from '@nestjs/common';
@@ -13,6 +13,7 @@ import {AuthGuard, UserParam} from "./guards/authGuard";
 import {UserEntity} from "./entities/user.entity";
 import {AdminGuard} from "./guards/adminGuard";
 import {UserDto} from "./dtos/userDto";
+import {ChangePasswordDto} from "./dtos/changePasswordDto";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
@@ -24,6 +25,16 @@ export class UserController {
     @Get("me")
     me(@UserParam() user: UserEntity) {
         return user
+    }
+
+    @UseGuards(AuthGuard)
+    @Put("change-password")
+    async changePassword(@UserParam() user: UserEntity, @Body() body: ChangePasswordDto) {
+        try {
+            return await this.userService.changePassword(user, body.oldPassword, body.newPassword);
+        } catch (e) {
+            throw new UnauthorizedException(e.message);
+        }
     }
 
     @Post("login")

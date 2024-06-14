@@ -68,4 +68,13 @@ export class UserService {
         user.password = hashSync(password, genSaltSync(10));
         return this.userRepository.save(user);
     }
+
+    changePassword(user: UserEntity, oldPassword: string, newPassword: string) {
+        if (!compareSync(oldPassword, user.password)) {
+            throw new Error("Old password is invalid")
+        }
+
+        user.password = hashSync(newPassword, genSaltSync(10));
+        return this.userRepository.save(user);
+    }
 }
