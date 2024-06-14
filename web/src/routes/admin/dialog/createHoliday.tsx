@@ -20,6 +20,9 @@ const formSchema = z.object({
 export const CreateHoliday = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            date: new Date().toISOString()
+        }
     })
 
     const {toast} = useToast()
@@ -74,7 +77,7 @@ export const CreateHoliday = () => {
                                     <FormLabel>Date</FormLabel>
                                     <FormControl>
                                         <div>
-                                            <DatePicker value={new Date(field.value || new Date())} onChange={e => {
+                                            <DatePicker value={new Date(field.value)} onChange={e => {
                                                 field.onChange(e.toISOString())
                                             }}/>
                                         </div>

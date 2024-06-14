@@ -38,3 +38,30 @@ export function useCreateHoliday() {
         }
     })
 }
+
+export function useDeleteHoliday() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["removeHoliday"],
+        mutationFn: async (id: number) => {
+            await api.delete(`/holiday/${id}`)
+            return id
+        },
+        onSuccess: (id) => {
+            queryClient.setQueryData([KEY], (old: Holiday[] | undefined) => {
+                return old ? old.filter(holiday => holiday.id !== id) : old
+            })
+        }
+    })
+}
+
+export function useIsHoliday(date: Date) {
+    return useQuery<boolean>({
+        queryKey: ["isHoliday", date],
+        queryFn: async () => {
+            const response = await api.get<boolean>(`/holiday/is-holiday/${date.toISOString()}`)
+            return response.data
+        }
+    })
+}

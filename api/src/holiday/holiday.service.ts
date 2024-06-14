@@ -54,4 +54,16 @@ export class HolidayService {
 
         return holidays;
     }
+
+    deleteHoliday(id: number) {
+        return this.holidayRepository.delete(id);
+    }
+
+    async isHoliday(date: Date): Promise<boolean> {
+        return this.holidayRepository.exists({
+            where: {
+                date: date
+            }
+        });
+    }
 }

@@ -11,6 +11,7 @@ import {useGetVacationsOnDay} from "@/routes/vacation/vacationApi.tsx";
 import {getWeekOfYear} from "@/utils.ts";
 import {useSearchParams} from "react-router-dom";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card.tsx";
+import {useIsHoliday} from "@/routes/admin/holidayApi.tsx";
 
 interface ShiftDayProps {
     name: string,
@@ -26,6 +27,13 @@ export default (props: ShiftDayProps) => {
     const addShiftToDayMutation = useAddShiftToDay(props.date)
     const [selectedShift, setSelectedShift] = useState<string | null>(null)
     const [searchParams, setSearchParams] = useSearchParams()
+    const isHolidayQuery = useIsHoliday(props.date)
+
+    const isHoliday = useMemo<boolean>(() => {
+        if (!isHolidayQuery.data) return false
+
+        return isHolidayQuery.data && isHolidayQuery.data === true
+    }, [isHolidayQuery]);
 
     function addShiftToDay() {
         if (!selectedShift) return
@@ -85,7 +93,7 @@ export default (props: ShiftDayProps) => {
     return (
         <Card className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "")}>
             <CardHeader>
-                <CardTitle className="text-sm lg:text-lg flex gap-2">
+                <CardTitle className={cn("text-sm lg:text-lg flex gap-2", isHoliday ? "text-gray-300" : "")}>
                     {props.name}
                     <p>{props.date?.toLocaleDateString("de")}</p>
                     {!allShiftsMinEmployees && <TrafficConeIcon className="text-red-400"/>}
@@ -112,13 +120,12 @@ export default (props: ShiftDayProps) => {
                     </>
                 )}
 
-                {isOpen && props.isAdmin && availableShiftsToAssign.length > 0 && (
+                {isOpen && !isHoliday && props.isAdmin && availableShiftsToAssign.length > 0 && (
                     <div className="flex gap-2">
                         <Select value={selectedShift || ""} onValueChange={setSelectedShift}>
                             <SelectTrigger>
                                 <SelectValue placeholder="select shift"/>
                             </SelectTrigger>
-
                             <SelectContent>
                                 <SelectGroup>
                                     {availableShiftsToAssign && availableShiftsToAssign
@@ -138,10 +145,15 @@ export default (props: ShiftDayProps) => {
                 }
             </CardHeader>
             <CardContent>
-                {isOpen && (
+
+                {isHoliday && (
+                    <h2 className="text-center">Holiday</h2>
+                )}
+
+                {isOpen && !isHoliday && (
                     <>
-                    {shiftsDays.isLoading && <p>Loading...</p>}
-                    {shiftsDays.isError && <p>Error</p>}
+                        {shiftsDays.isLoading && <p>Loading...</p>}
+                        {shiftsDays.isError && <p>Error</p>}
 
                         <div className="space-y-4">
                             {vacations.data && vacations.data.length > 0 && (
