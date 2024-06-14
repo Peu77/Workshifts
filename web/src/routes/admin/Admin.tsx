@@ -7,6 +7,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Shifts} from "@/routes/admin/shifts.tsx";
 import {Users} from "@/routes/admin/users.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import Holidays from "@/routes/admin/holidays.tsx";
 
 export const Admin = () => {
     const {data, isLoading, isError} = useQuery<{
@@ -74,6 +75,18 @@ export const Admin = () => {
                         </CardContent>
                     </CardHeader>
                 </Card>
+
+                <Card className="min-w-[400px] flex-grow">
+                    <CardHeader>
+                        <CardTitle>Holidays</CardTitle>
+                        <CardDescription>Manage holidays</CardDescription>
+
+                        <CardContent>
+                            <Holidays/>
+                        </CardContent>
+                    </CardHeader>
+                </Card>
+
 
             </div>
         </div>
