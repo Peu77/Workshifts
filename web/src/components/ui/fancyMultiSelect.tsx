@@ -14,6 +14,7 @@ import {useMemo} from "react";
 export interface Item {
     label: string;
     value: string;
+    color?: string;
 }
 
 interface Props {
@@ -71,7 +72,8 @@ export function FancyMultiSelect({items, placeholder, selectedState}: Props) {
                 <div className="flex flex-wrap gap-1">
                     {selected.map((item) => {
                         return (
-                            <Badge key={item.value} variant="secondary">
+                            <Badge key={item.value} variant="secondary"
+                                   style={{backgroundColor: item.color || "white"}}>
                                 {item.label}
                                 <button
                                     className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -122,6 +124,7 @@ export function FancyMultiSelect({items, placeholder, selectedState}: Props) {
                                                 setSelected((prev) => [...prev, item]);
                                             }}
                                             className={"cursor-pointer"}
+                                            style={{backgroundColor: item.color || "white"}}
                                         >
                                             {item.label}
                                         </CommandItem>

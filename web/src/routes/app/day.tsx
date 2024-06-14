@@ -149,7 +149,8 @@ export default (props: ShiftDayProps) => {
                                     {vacations.data && vacations.data.map(vacation => (
                                         <HoverCard key={vacation.id}>
                                             <HoverCardTrigger>
-                                                <p className="hover:underline cursor-pointer">{vacation.user.name}</p>
+                                                <p style={{backgroundColor: vacation.user.color}}
+                                                   className="hover:underline cursor-pointer rounded-lg p-1">{vacation.user.name}</p>
                                             </HoverCardTrigger>
 
                                             <HoverCardContent>

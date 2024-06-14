@@ -71,18 +71,20 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                     onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
                     className="absolute right-[-0] top-[-0] cursor-pointer hover:text-red-300"/>}
 
-                <h3>{shiftDay.shift.name}</h3>
-                <p>{getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</p>
-                <ul className="space-y-2">
-                    {shiftDay.users.map(user => <li className="flex cursor-pointer gap-4 justify-between max-w-[100px]"
-                                                    key={user.id}>
-                        <p>- {user.name}</p>
-                        {isAdmin && <MinusCircleIcon onClick={() => unassignUserMutation.mutate({
-                            shiftDayId: shiftDay.id,
-                            user
-                        })}/>}
-                    </li>)}
-                </ul>
+                <h3>{shiftDay.shift.name} {getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</h3>
+                <div className="flex flex-wrap gap-4 mt-2">
+                    {shiftDay.users.map(user => <div
+                        className={`flex gap-2 items-center p-1 rounded-lg`}
+                        style={{backgroundColor: user.color}}
+                        key={user.id}>
+                        <p> {user.name}</p>
+                        {isAdmin && <MinusCircleIcon className="cursor-pointer" size="15px"
+                                                     onClick={() => unassignUserMutation.mutate({
+                                                         shiftDayId: shiftDay.id,
+                                                         user
+                                                     })}/>}
+                    </div>)}
+                </div>
 
                 {(joinShiftDayMutation.isPending || quitShiftDayMutation.isPending) ? <ColorRing
                     visible={true}
@@ -99,7 +101,8 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                     <FancyMultiSelect selectedState={selectedUsersToAssignState} placeholder={"assign users"}
                                       items={availableUsersToAssign.map(user => ({
                                           label: user.name,
-                                          value: user.id.toString()
+                                          value: user.id.toString(),
+                                          color: user.color
                                       }))}/>
 
                     <Button onClick={() => {
