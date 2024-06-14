@@ -1,25 +1,13 @@
-import {useQuery} from "@tanstack/react-query";
-import api from "@/api.ts";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-
-interface Holiday {
-    id: number;
-    name: string;
-    date: Date;
-}
-
-function useGetHolidays() {
-    return useQuery<Holiday[]>({
-        queryKey: ["holidays"],
-        queryFn: async () => {
-            const response = await api.get<Holiday[]>("/holiday/2024")
-            return response.data
-        }
-    })
-}
+import {useContext} from "react";
+import {DialogContext} from "@/provider/DialogProvider.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {CreateHoliday} from "@/routes/admin/dialog/createHoliday.tsx";
+import {useGetHolidays} from "@/routes/admin/holidayApi.tsx";
 
 export default () => {
-    const {data, isLoading, isError} = useGetHolidays()
+    const {data, isLoading, isError} = useGetHolidays(new Date().getFullYear())
+    const {setDialog} = useContext(DialogContext)
 
     if (isLoading) {
         return <p>Loading...</p>
@@ -31,6 +19,7 @@ export default () => {
 
     return (
         <div>
+            <Button onClick={() => setDialog(<CreateHoliday/>)}>Create Holiday</Button>
             <Table>
                 <TableHeader>
                     <TableRow>
