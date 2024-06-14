@@ -1,14 +1,19 @@
-import {IsEmail, IsNotEmpty, IsString} from "class-validator";
+import {IsBoolean, IsEmail, IsHexColor, IsNotEmpty, IsString, MinLength} from "class-validator";
 
 export class UserDto {
     @IsString()
     @IsNotEmpty()
-    name: string;
-
-    @IsEmail()
-    email: string;
+    name: string
 
     @IsString()
     @IsNotEmpty()
-    password: string;
+    email: string
+
+    @IsHexColor()
+    color: string
+
+    @IsBoolean()
+    isAdmin: boolean
+
+    password: string | undefined
 }

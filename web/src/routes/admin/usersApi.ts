@@ -55,16 +55,20 @@ export function useDeleteUser() {
     })
 }
 
+interface UserDto {
+    name: string,
+    email: string,
+    color: string,
+    password: string | undefined,
+    isAdmin: boolean
+}
+
 export function useCreateUser() {
     const queryClient = useQueryClient()
 
     return useMutation({
         mutationKey: ["createUser"],
-        mutationFn: async (user: {
-            name: string,
-            email: string,
-            password: string
-        }) => {
+        mutationFn: async (user: UserDto) => {
             const response = await api.post("/user/user", user)
             return response.data
         },
@@ -74,6 +78,32 @@ export function useCreateUser() {
             })
         }
     })
+}
+
+export function useUpdateUser() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ["updateUser"],
+        mutationFn: async ({id, user}: {
+            id: number
+            user: UserDto,
+        }) => {
+            const response = await api.put(`/user/${id}`, user)
+            return response.data
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([KEY], (old: User[] | undefined) => {
+                return old ? old.map(t => {
+                    if (t.id === data.id) {
+                        return data
+                    }
+                    return t
+                }) : old
+            })
+        }
+    })
+
 }
 
 export function useChangePassword() {

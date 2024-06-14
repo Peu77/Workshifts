@@ -1,11 +1,15 @@
 import {useDeleteUser, User} from "@/routes/admin/usersApi.ts";
 import {TableCell, TableRow} from "@/components/ui/table.tsx";
-import { TrashIcon} from "lucide-react";
+import {EditIcon, TrashIcon} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {ColorRing} from "react-loader-spinner";
+import {useContext} from "react";
+import {DialogContext} from "@/provider/DialogProvider.tsx";
+import {EditUser} from "@/routes/admin/dialog/editUser.tsx";
 
 export const UserCell = (user: User) => {
     const deleteUserMutation = useDeleteUser()
+    const {setDialog} = useContext(DialogContext)
 
     function removeUser() {
         if (deleteUserMutation.isPending) return
@@ -19,7 +23,11 @@ export const UserCell = (user: User) => {
             <TableCell>
                 <div className="w-6 h-6 rounded-full" style={{backgroundColor: user.color}}/>
             </TableCell>
-            <TableCell>
+            <TableCell className="flex gap-2">
+                <Button onClick={() => setDialog(<EditUser user={user}/>)} size="icon" variant="ghost">
+                    <EditIcon/>
+                </Button>
+
                 <Button onClick={removeUser} size="icon" variant="ghost">
                     {deleteUserMutation.isPending ? <ColorRing
                         visible={true}

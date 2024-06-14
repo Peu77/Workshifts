@@ -33,7 +33,7 @@ export class UserEntity {
     })
     role: UserRole;
 
-    @ManyToMany(() => ShiftDayEntity, shiftDay => shiftDay.users)
+    @ManyToMany(() => ShiftDayEntity, shiftDay => shiftDay.users, {cascade: true, onDelete: "CASCADE"})
     shiftDays: ShiftDayEntity[]
 
     @OneToMany(() => VacationEntity, vacation => vacation.user)

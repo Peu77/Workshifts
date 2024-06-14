@@ -5,6 +5,7 @@ import {Repository} from "typeorm";
 import {compareSync, genSaltSync, hashSync} from "bcrypt";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
+import {UserDto} from "./dtos/userDto";
 
 @Injectable()
 export class UserService {
@@ -60,15 +61,6 @@ export class UserService {
         return this.userRepository.delete({id});
     }
 
-    createUser(name: string, email: string, password: string) {
-        const user = new UserEntity();
-        user.name = name;
-        user.email = email;
-        user.role = UserRole.USER;
-        user.password = hashSync(password, genSaltSync(10));
-        return this.userRepository.save(user);
-    }
-
     changePassword(user: UserEntity, oldPassword: string, newPassword: string) {
         if (!compareSync(oldPassword, user.password)) {
             throw new Error("Old password is invalid")
@@ -76,5 +68,17 @@ export class UserService {
 
         user.password = hashSync(newPassword, genSaltSync(10));
         return this.userRepository.save(user);
+    }
+
+    async applyDtoUser(userEntity: UserEntity, user: UserDto) {
+        userEntity.name = user.name;
+        userEntity.email = user.email;
+        userEntity.color = user.color;
+        if (user.password) {
+            userEntity.password = hashSync(user.password, genSaltSync(10));
+        }
+
+        userEntity.role = user.isAdmin ? UserRole.ADMIN : UserRole.USER;
+        return this.userRepository.save(userEntity);
     }
 }

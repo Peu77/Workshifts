@@ -8,38 +8,50 @@ import {Input} from "@/components/ui/input.tsx";
 import {useContext} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useToast} from "@/components/ui/use-toast.ts";
-import {useCreateUser} from "@/routes/admin/usersApi.ts";
+import {User, useUpdateUser} from "@/routes/admin/usersApi.ts";
 import {Switch} from "@/components/ui/switch.tsx";
 
 const formSchema = z.object({
     name: z.string().nonempty(),
     email: z.string().email(),
     color: z.string().nonempty(),
-    isAdmin: z.boolean().default(false),
-    newPassword: z.string().min(8)
+    isAdmin: z.boolean(),
+    newPassword: z.string().min(8).optional()
 })
 
+interface EditUserProps {
+    user: User
+}
 
-export const CreateUser = () => {
+export const EditUser = ({user}: EditUserProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema)
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: user.name,
+            email: user.email,
+            color: user.color,
+            isAdmin: user.role === "admin",
+        }
     })
 
     const {setDialog} = useContext(DialogContext)
     const {toast} = useToast()
-    const createUserMutation = useCreateUser()
+    const updateUserMutation = useUpdateUser()
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        createUserMutation.mutateAsync({
-            name: data.name,
-            email: data.email,
-            color: data.color,
-            isAdmin: data.isAdmin,
-            password: data.newPassword
+        updateUserMutation.mutateAsync({
+            id: user.id,
+            user: {
+                name: data.name,
+                email: data.email,
+                color: data.color,
+                isAdmin: data.isAdmin,
+                password: data.newPassword
+            }
         }).then(() => {
             toast({
                 title: "Success",
-                description: "User created successfully."
+                description: "User updated successfully."
             })
 
             setDialog(null)
@@ -58,7 +70,7 @@ export const CreateUser = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <DialogHeader>
-                        <DialogTitle>Create User</DialogTitle>
+                        <DialogTitle>Edit User</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
@@ -127,7 +139,7 @@ export const CreateUser = () => {
 
                     </div>
                     <DialogFooter className="mt-4">
-                        <Button type="submit">create</Button>
+                        <Button type="submit">apply</Button>
                     </DialogFooter>
 
                 </form>

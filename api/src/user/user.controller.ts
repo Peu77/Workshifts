@@ -37,6 +37,17 @@ export class UserController {
         }
     }
 
+    @Put(":id")
+    @UseGuards(AuthGuard, AdminGuard)
+    async update(@Param("id", ParseIntPipe) id: number, @Body() user: UserDto) {
+        const userEntity = await this.userService.getUserById(id);
+        if (!userEntity) {
+            throw new UnauthorizedException("User not found");
+        }
+
+        return this.userService.applyDtoUser(userEntity, user);
+    }
+
     @Post("login")
     async login(@Body() body: LoginDto): Promise<{
         token: string
@@ -66,6 +77,11 @@ export class UserController {
     @UseGuards(AuthGuard, AdminGuard)
     @Post("user")
     async create(@Body() user: UserDto) {
-        return this.userService.createUser(user.name, user.email, user.password);
+        const existingUser = await this.userService.getUserByEmail(user.email);
+        if (existingUser) {
+            throw new UnauthorizedException("User already exists")
+        }
+
+        return this.userService.applyDtoUser(new UserEntity(), user);
     }
 }
