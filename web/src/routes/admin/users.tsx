@@ -21,6 +21,7 @@ export const Users = () => {
                         <TableRow>
                             <TableHead>name</TableHead>
                             <TableHead>email</TableHead>
+                            <TableHead>color</TableHead>
                             <TableHead>actions</TableHead>
                         </TableRow>
                     </TableHeader>

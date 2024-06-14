@@ -13,6 +13,7 @@ export interface User {
     id: number;
     email: string;
     name: string;
+    color: string,
     role: string;
 }
 

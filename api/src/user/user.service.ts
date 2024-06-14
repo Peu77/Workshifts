@@ -53,11 +53,7 @@ export class UserService {
     }
 
     getUserList() {
-        return this.userRepository.find({
-            where: {
-                role: UserRole.USER
-            }
-        });
+        return this.userRepository.find();
     }
 
     deleteUser(id: number) {

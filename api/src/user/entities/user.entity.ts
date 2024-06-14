@@ -23,6 +23,9 @@ export class UserEntity {
     @Column()
     password: string;
 
+    @Column({default: "#3c7cb5"})
+    color: string;
+
     @Column({
         type: "enum",
         enum: UserRole,

@@ -14,8 +14,11 @@ export const UserCell = (user: User) => {
 
     return (
         <TableRow>
-            <TableCell>{user.name}</TableCell>
-            <TableCell>{user.email}</TableCell>
+            <TableCell className={user.role === "admin" ? "text-red-400" : ""}>{user.name}</TableCell>
+            <TableCell className={user.role === "admin" ? "text-red-400" : ""}>{user.email}</TableCell>
+            <TableCell>
+                <div className="w-6 h-6 rounded-full" style={{backgroundColor: user.color}}/>
+            </TableCell>
             <TableCell>
                 <Button onClick={removeUser} size="icon" variant="ghost">
                     {deleteUserMutation.isPending ? <ColorRing
