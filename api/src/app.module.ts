@@ -6,6 +6,7 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
 import { ShiftModule } from './shift/shift.module';
 import { UserModule } from './user/user.module';
 import { VacationModule } from './vacation/vacation.module';
+import { HolidayModule } from './holiday/holiday.module';
 
 @Module({
     imports: [ConfigModule.forRoot({
@@ -29,7 +30,8 @@ import { VacationModule } from './vacation/vacation.module';
         }),
         ShiftModule,
         UserModule,
-        VacationModule
+        VacationModule,
+        HolidayModule
     ],
     controllers: [AppController],
     providers: [AppService],
