@@ -9,6 +9,9 @@ import CopyShiftDays from "@/routes/app/copyShiftDays.tsx";
 import Week from "@/routes/app/week.tsx";
 import Month from "@/routes/app/month.tsx";
 import {Input} from "@/components/ui/input";
+import {DialogContext} from "@/provider/DialogProvider.tsx";
+import {useContext} from "react";
+import {ChangePassword} from "@/routes/app/dialog/changePassword.tsx";
 
 export interface WeekDay {
     name: string,
@@ -23,10 +26,11 @@ const App = () => {
     const {data, isLoading, isError} = useGetMe();
     const [searchParams, setSearchParams] = useSearchParams();
     const timeRange = searchParams.get("timeRange") || "1"
-    const year = searchParams.get("year")
+    const year = searchParams.get("year") || ""
     const shifts = useGetShifts();
     const navigate = useNavigate();
     let today = new Date()
+    const {setDialog} = useContext(DialogContext)
 
     function setTimeRange(value: string) {
         setSearchParams(prev => {
@@ -84,11 +88,12 @@ const App = () => {
                     {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
                     <Button onClick={() => navigate("/vacation")}>vacation</Button>
                     <CopyShiftDays/>
+                    <Button onClick={() => setDialog(<ChangePassword/>)}>Change password</Button>
                     <Button variant="destructive" onClick={() => {
                         localStorage.removeItem("token")
                         navigate("/")
                     }
-                    }>logout</Button>
+                    }> logout</Button>
                 </div>
 
 
@@ -106,7 +111,7 @@ const App = () => {
                         </SelectContent>
                     </Select>
 
-                    <Input value={year} onChange={e => setYear(e.target.value)} type="number"
+                    <Input value={parseInt(year)} onChange={e => setYear(e.target.value)} type="number"
                            className="max-w-[140px]"/>
                 </div>
 
