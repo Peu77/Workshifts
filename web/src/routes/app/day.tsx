@@ -90,7 +90,10 @@ export default (props: ShiftDayProps) => {
 
     return (
         <Card
-            className={cn("flex-grow-0 flex-shrink-0 basis-[19%]  relative", props.isToday ? "border-blue-400" : "", isHoliday ? "border-red-400" : "")}>
+            className={cn("flex-grow-0 flex-shrink-0  relative",
+                props.isToday ? "border-blue-400" : "",
+                isHoliday ? "border-red-400" : "",
+                searchParams.get("weekend") === "true" ? "basis-[13%]" : "basis-[19%]")}>
             <CardHeader>
                 <CardTitle className={cn("text-sm lg:text-lg flex gap-2", isHoliday ? "text-red-400" : "")}>
                     {props.name}
@@ -161,7 +164,13 @@ export default (props: ShiftDayProps) => {
                                             </HoverCardTrigger>
 
                                             <HoverCardContent>
-                                                <p>{vacation.description} {vacation.startDate.toLocaleDateString("de", {month: "2-digit", day: "2-digit"})} - {vacation.endDate.toLocaleDateString("de", {month: "2-digit", day: "2-digit"})}</p>
+                                                <p>{vacation.description} {vacation.startDate.toLocaleDateString("de", {
+                                                    month: "2-digit",
+                                                    day: "2-digit"
+                                                })} - {vacation.endDate.toLocaleDateString("de", {
+                                                    month: "2-digit",
+                                                    day: "2-digit"
+                                                })}</p>
                                             </HoverCardContent>
                                         </HoverCard>
 

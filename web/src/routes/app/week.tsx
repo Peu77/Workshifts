@@ -52,16 +52,25 @@ export default (props: TimeRangeComponentProps) => {
         const startOfYear = new Date(parseInt(year), 0, 1)
         const startOfWeek = new Date(startOfYear.setDate(startOfYear.getDate() + (parseInt(week) * 7)))
 
+        // Adjust the startOfWeek to be Monday
+        const dayOfWeek = startOfWeek.getDay();
+        const startOfWeekAdjusted = dayOfWeek === 0 ? new Date(startOfWeek.setDate(startOfWeek.getDate() - 6)) :
+            dayOfWeek === 1 ? startOfWeek : new Date(startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek + 1));
+
         for (let i = 0; i < 7; i++) {
-            const date = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate() + i)
+            const date = new Date(startOfWeekAdjusted.getFullYear(), startOfWeekAdjusted.getMonth(), startOfWeekAdjusted.getDate() + i)
             newDays.push({
                 name: date.toLocaleDateString('de', {weekday: 'short'}),
                 date: date
             })
         }
 
+        if (searchParams.get("weekend") === "true") {
+            return newDays
+        }
+
         return newDays.filter(day => day.name !== "Sa" && day.name !== "So")
-    }, [week, year]);
+    }, [week, year, searchParams]);
 
     function stepWeek(forward: boolean) {
         const newWeek = parseInt(week)
@@ -87,7 +96,7 @@ export default (props: TimeRangeComponentProps) => {
 
     return (
         <div className="space-y-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
                 <YearAndTypeControlls/>
 
                 <Select value={week} onValueChange={setWeek}>

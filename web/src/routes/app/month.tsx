@@ -39,20 +39,23 @@ export default (props: TimeRangeComponentProps) => {
 
         const monthIndex = parseInt(month)
         const yearInt = parseInt(year)
-        const lastDay = new Date(yearInt, monthIndex, 0)
+        const lastDay = new Date(yearInt, monthIndex + 1, 0)
         const firstDay = new Date(yearInt, monthIndex, 1)
 
-        // fill up the first week with the last days of the previous month if the first day is not a monday or sunday or saturday
-        if (firstDay.getDay() !== 1 && firstDay.getDay() !== 0 && firstDay.getDay() !== 6) {
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                const date = new Date(yearInt, monthIndex, 1 - firstDay.getDay() + i)
-                newDays.push({
+        // Adjust the first day to be Monday
+        const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
+
+        // fill up the first week with the last days of the previous month if the first day is not a Monday
+        if (firstDayOfWeek !== 0) {
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const date = new Date(yearInt, monthIndex, -i);
+                newDays.unshift({
                     name: date.toLocaleDateString('de', {weekday: 'short'}),
                     date: date
-                })
+                });
             }
         }
-        for (let i = 1; i < lastDay.getDate(); i++) {
+        for (let i = 1; i <= lastDay.getDate(); i++) {
             const date = new Date(yearInt, monthIndex, i)
             newDays.push({
                 name: date.toLocaleDateString('de', {weekday: 'short'}),
@@ -60,9 +63,12 @@ export default (props: TimeRangeComponentProps) => {
             })
         }
 
+        if (searchParams.get("weekend") === "true") {
+            return newDays
+        }
 
         return newDays.filter(day => day.name !== "Sa" && day.name !== "So")
-    }, [month, year]);
+    }, [month, year, searchParams]);
 
     function stepWeek(forward: boolean) {
         const newMonth = parseInt(month)
@@ -88,7 +94,7 @@ export default (props: TimeRangeComponentProps) => {
 
     return (
         <div className="space-y-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
                 <YearAndTypeControlls/>
 
                 <Select value={month} onValueChange={setMonth}>
