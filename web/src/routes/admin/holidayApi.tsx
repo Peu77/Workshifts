@@ -56,11 +56,11 @@ export function useDeleteHoliday() {
     })
 }
 
-export function useIsHoliday(date: Date) {
-    return useQuery<boolean>({
+export function getHolidayOnDay(date: Date) {
+    return useQuery<Holiday | null>({
         queryKey: ["isHoliday", date],
         queryFn: async () => {
-            const response = await api.get<boolean>(`/holiday/is-holiday/${date.toISOString()}`)
+            const response = await api.get<Holiday | null>(`/holiday/day/${date.toISOString()}`)
             return response.data
         }
     })

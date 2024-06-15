@@ -3,6 +3,7 @@ import {HolidayService} from "./holiday.service";
 import {AuthGuard} from "../user/guards/authGuard";
 import {AdminGuard} from "../user/guards/adminGuard";
 import {HolidayDto} from "./dtos/holidayDto";
+import {HolidayEntity} from "./entities/holiday.entity";
 
 @UseGuards(AuthGuard)
 @Controller('holiday')
@@ -30,8 +31,8 @@ export class HolidayController {
         return this.holidayService.deleteHoliday(id);
     }
 
-    @Get("is-holiday/:date")
-    async isHoliday(@Param("date") date: string) {
+    @Get("day/:date")
+    async isHoliday(@Param("date") date: string): Promise<HolidayEntity | null> {
         return this.holidayService.isHoliday(new Date(date));
     }
 }

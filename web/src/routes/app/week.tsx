@@ -7,6 +7,7 @@ import {getWeekOfYear} from "@/utils.ts";
 import {useSearchParams} from "react-router-dom";
 import {Simulate} from "react-dom/test-utils";
 import input = Simulate.input;
+import YearAndTypeControlls from "@/routes/app/yearAndTypeControlls.tsx";
 
 
 export default (props: TimeRangeComponentProps) => {
@@ -78,6 +79,8 @@ export default (props: TimeRangeComponentProps) => {
     return (
         <div className="space-y-4">
             <div className="flex gap-2">
+                <YearAndTypeControlls/>
+
                 <Select value={week} onValueChange={setWeek}>
                     <SelectTrigger className="max-w-[160px]">
                         <SelectValue placeholder="select week"/>

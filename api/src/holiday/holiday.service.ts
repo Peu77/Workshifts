@@ -59,8 +59,8 @@ export class HolidayService {
         return this.holidayRepository.delete(id);
     }
 
-    async isHoliday(date: Date): Promise<boolean> {
-        return this.holidayRepository.exists({
+    async isHoliday(date: Date): Promise<HolidayEntity | null> {
+        return this.holidayRepository.findOne({
             where: {
                 date: date
             }

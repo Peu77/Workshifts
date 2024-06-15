@@ -4,11 +4,9 @@ import {useGetMe} from "@/routes/admin/usersApi.ts";
 import {useGetShifts} from "@/routes/admin/shiftsApi.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import CopyShiftDays from "@/routes/app/copyShiftDays.tsx";
 import Week from "@/routes/app/week.tsx";
 import Month from "@/routes/app/month.tsx";
-import {Input} from "@/components/ui/input";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {useContext} from "react";
 import {ChangePassword} from "@/routes/app/dialog/changePassword.tsx";
@@ -32,22 +30,11 @@ const App = () => {
     let today = new Date()
     const {setDialog} = useContext(DialogContext)
 
-    function setTimeRange(value: string) {
-        setSearchParams(prev => {
-            prev.set("timeRange", value)
-            return prev;
-        })
-    }
-
-    function setYear(value: string) {
-        setSearchParams(prev => {
-            prev.set("year", value)
-            return prev;
-        })
-    }
-
     if (!year) {
-        setYear(today.getFullYear().toString())
+        setSearchParams(prev => {
+            prev.set("year", today.getFullYear().toString())
+            return prev;
+        })
     }
 
     if (isLoading) {
@@ -82,12 +69,12 @@ const App = () => {
 
     return (
         <>
-            <div className="space-y-4 p-2">
+            <div className="p-2">
                 <h1>Welcome back, {data?.name}</h1>
-                <div className="flex gap-4">
+                <div className="flex gap-2 mt-2">
                     {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
                     <Button onClick={() => navigate("/vacation")}>vacation</Button>
-                    <CopyShiftDays/>
+                    {isAdmin && <CopyShiftDays/>}
                     <Button onClick={() => setDialog(<ChangePassword/>)}>Change password</Button>
                     <Button variant="destructive" onClick={() => {
                         localStorage.removeItem("token")
@@ -96,27 +83,10 @@ const App = () => {
                     }> logout</Button>
                 </div>
 
-
-                <div className="flex gap-2">
-                    <Select onValueChange={setTimeRange} value={timeRange}>
-                        <SelectTrigger className="max-w-[160px]">
-                            <SelectValue placeholder="select time range"/>
-                        </SelectTrigger>
-
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value="1">Week</SelectItem>
-                                <SelectItem value="2">Month</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-                    <Input value={parseInt(year)} onChange={e => setYear(e.target.value)} type="number"
-                           className="max-w-[140px]"/>
+                <div className="mt-10">
+                    {timeRange === "1" && <Week render={renderDays}/>}
+                    {timeRange === "2" && <Month render={renderDays}/>}
                 </div>
-
-                {timeRange === "1" && <Week render={renderDays}/>}
-                {timeRange === "2" && <Month render={renderDays}/>}
             </div>
         </>
     )

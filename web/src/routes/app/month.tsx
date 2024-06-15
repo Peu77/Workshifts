@@ -4,6 +4,7 @@ import {useMemo} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {StepBackIcon, StepForwardIcon} from "lucide-react";
 import {useSearchParams} from "react-router-dom";
+import YearAndTypeControlls from "@/routes/app/yearAndTypeControlls.tsx";
 
 export default (props: TimeRangeComponentProps) => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -79,6 +80,8 @@ export default (props: TimeRangeComponentProps) => {
     return (
         <div className="space-y-4">
             <div className="flex gap-2">
+                <YearAndTypeControlls/>
+
                 <Select value={month} onValueChange={setMonth}>
                     <SelectTrigger className="max-w-[160px]">
                         <SelectValue placeholder="select month"/>
