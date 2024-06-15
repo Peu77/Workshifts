@@ -70,10 +70,6 @@ export class ShiftService {
             throw new Error("User not found in shift day")
         }
 
-        if (shiftDayEntity.users.length <= shiftDayEntity.shift.minEmployees && !force) {
-            throw new Error("Shift day has minimum employees")
-        }
-
         const now = new Date();
         const diff = (shiftDayEntity.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
 
@@ -82,7 +78,9 @@ export class ShiftService {
         }
 
         if (diff < this.DAYS_BEFORE_ABLE_TO_QUIT && !force) {
-            throw new Error(`Cannot quit shift ${this.DAYS_BEFORE_ABLE_TO_QUIT} days before`)
+            if (shiftDayEntity.users.length <= shiftDayEntity.shift.minEmployees && !force) {
+                throw new Error("Shift day has minimum employees")
+            }
         }
 
 
