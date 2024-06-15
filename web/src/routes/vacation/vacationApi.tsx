@@ -7,6 +7,7 @@ const KEY = 'vacation';
 export interface Vacation {
     id: number;
     user: User;
+    description: string,
     startDate: Date;
     endDate: Date;
 }
@@ -21,6 +22,7 @@ export function useGetVacations() {
 }
 
 interface CreateVacationDto {
+    description: string,
     startDate: Date;
     endDate: Date;
 }
@@ -29,8 +31,8 @@ export function useCreateVacation() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationKey: ['createVacation'],
-        mutationFn: async ({startDate, endDate}: CreateVacationDto) => {
-            const response = await api.post<Vacation>('/vacation', {startDate, endDate});
+        mutationFn: async (dto: CreateVacationDto) => {
+            const response = await api.post<Vacation>('/vacation', dto);
             return response.data;
 
         },

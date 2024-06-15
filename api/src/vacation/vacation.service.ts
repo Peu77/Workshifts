@@ -10,8 +10,8 @@ export class VacationService {
     ) {
     }
 
-    async createVacation(userId: number, startDate: Date, endDate: Date) {
-        const vacation = this.vacationRepository.create({user: {id: userId}, startDate, endDate});
+    async createVacation(userId: number, description: string, startDate: Date, endDate: Date) {
+        const vacation = this.vacationRepository.create({user: {id: userId}, description, startDate, endDate});
         return await this.vacationRepository.save(vacation);
     }
 
@@ -33,9 +33,9 @@ export class VacationService {
         });
 
         return vacations.filter((vacation, index, self) =>
-            index === self.findIndex((v) => (
-                v.user.id === vacation.user.id
-            ))
+                index === self.findIndex((v) => (
+                    v.user.id === vacation.user.id
+                ))
         );
     }
 }

@@ -32,6 +32,13 @@ export default (props: TimeRangeComponentProps) => {
         })
     }
 
+    function setYear(value: string) {
+        setSearchParams(prev => {
+            prev.set("year", value)
+            return prev;
+        })
+    }
+
     function setToday() {
         setSearchParams(prev => {
             prev.set("week", getWeekOfYear(today).toString())
@@ -61,6 +68,7 @@ export default (props: TimeRangeComponentProps) => {
         if (forward) {
             if (newWeek === 51) {
                 setWeek("0")
+                setYear((parseInt(year) + 1).toString())
                 return
             }
 
@@ -70,6 +78,7 @@ export default (props: TimeRangeComponentProps) => {
 
         if (newWeek === 0) {
             setWeek("51")
+            setYear((parseInt(year) - 1).toString())
             return
         }
 

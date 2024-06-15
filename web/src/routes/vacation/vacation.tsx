@@ -6,6 +6,7 @@ import {DatePicker} from "@/components/ui/datePicker.tsx";
 import {useState} from "react";
 import {useToast} from "@/components/ui/use-toast.ts";
 import {TrashIcon} from "lucide-react";
+import {Input} from "@/components/ui/input.tsx";
 
 export default () => {
     const navigate = useNavigate()
@@ -13,6 +14,7 @@ export default () => {
     const createVacation = useCreateVacation();
     const [startDate, setStartDate] = useState<Date | undefined>(undefined)
     const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+    const [description, setDescription] = useState<string>("Urlaub")
     const {toast} = useToast()
     const deleteVacation = useDeleteVacation();
 
@@ -35,7 +37,16 @@ export default () => {
             return
         }
 
-        createVacation.mutate({startDate, endDate})
+        if(!description) {
+            toast({
+                title: "Error",
+                description: "Please enter a description",
+                variant: "destructive"
+            })
+            return
+        }
+
+        createVacation.mutate({description, startDate, endDate})
         setEndDate(undefined)
         setStartDate(undefined)
     }
@@ -46,6 +57,10 @@ export default () => {
             <div className="flex gap-2">
                 <DatePicker onChange={setStartDate} value={startDate}/>
                 <DatePicker onChange={setEndDate} value={endDate}/>
+                <Input value={description}
+                       placeholder="description"
+                       onChange={e => setDescription(e.target.value)}
+                       className="max-w-[160px]"/>
                 <Button onClick={handleSubmit}>Submit</Button>
             </div>
 
@@ -58,6 +73,7 @@ export default () => {
                     <TableRow>
                         <TableHead>Start Date</TableHead>
                         <TableHead>End Date</TableHead>
+                        <TableHead>Description</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -66,6 +82,7 @@ export default () => {
                         <TableRow key={vacation.id}>
                             <TableCell>{vacation.startDate.toLocaleDateString("de")}</TableCell>
                             <TableCell>{vacation.endDate.toLocaleDateString("de")}</TableCell>
+                            <TableCell>{vacation.description}</TableCell>
                             <TableCell>
                                 <Button onClick={() => deleteVacation.mutate(vacation.id)} variant="destructive"
                                         size="icon">

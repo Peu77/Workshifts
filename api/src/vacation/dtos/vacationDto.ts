@@ -1,7 +1,10 @@
-import {IsDateString} from "class-validator";
+import {IsDateString, IsNotEmpty, IsString} from "class-validator";
 
-export class VacationDto{
+export class VacationDto {
 
+    @IsString()
+    @IsNotEmpty()
+    description: string;
 
     @IsDateString()
     startDate: Date

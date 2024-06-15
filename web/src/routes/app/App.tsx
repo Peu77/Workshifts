@@ -73,7 +73,7 @@ const App = () => {
                 <h1>Welcome back, {data?.name}</h1>
                 <div className="flex gap-2 mt-2">
                     {isAdmin && <Button onClick={() => navigate("/admin")}>admin panel</Button>}
-                    <Button onClick={() => navigate("/vacation")}>vacation</Button>
+                    <Button onClick={() => navigate("/vacation")}>absence</Button>
                     {isAdmin && <CopyShiftDays/>}
                     <Button onClick={() => setDialog(<ChangePassword/>)}>Change password</Button>
                     <Button variant="destructive" onClick={() => {

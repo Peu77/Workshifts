@@ -24,8 +24,8 @@ export class VacationController {
     }
 
     @Post()
-    async createVacation(@UserParam() user: UserEntity, @Body() {startDate, endDate}: VacationDto) {
-        return this.vacationService.createVacation(user.id, startDate, endDate);
+    async createVacation(@UserParam() user: UserEntity, @Body() {description, startDate, endDate}: VacationDto) {
+        return this.vacationService.createVacation(user.id, description, startDate, endDate);
     }
 
     @Get()

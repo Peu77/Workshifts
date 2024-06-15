@@ -19,6 +19,13 @@ export default (props: TimeRangeComponentProps) => {
         })
     }
 
+    function setYear(value: string) {
+        setSearchParams(prev => {
+            prev.set("year", value)
+            return prev;
+        })
+    }
+
     function setToday() {
         setSearchParams(prev => {
             prev.set("month", today.getMonth().toString())
@@ -61,6 +68,7 @@ export default (props: TimeRangeComponentProps) => {
         const newMonth = parseInt(month)
         if (forward) {
             if (newMonth === 11) {
+                setYear((parseInt(year) + 1).toString())
                 setMonth("0")
                 return
             }
@@ -70,6 +78,7 @@ export default (props: TimeRangeComponentProps) => {
         }
 
         if (newMonth === 0) {
+            setYear((parseInt(year) - 1).toString())
             setMonth("11")
             return
         }

@@ -161,7 +161,7 @@ export default (props: ShiftDayProps) => {
                                             </HoverCardTrigger>
 
                                             <HoverCardContent>
-                                                <p>{vacation.startDate.toLocaleDateString("de")} - {vacation.endDate.toLocaleDateString("de")}</p>
+                                                <p>{vacation.description} {vacation.startDate.toLocaleDateString("de", {month: "2-digit", day: "2-digit"})} - {vacation.endDate.toLocaleDateString("de", {month: "2-digit", day: "2-digit"})}</p>
                                             </HoverCardContent>
                                         </HoverCard>
 
