@@ -113,12 +113,12 @@ export default (props: TimeRangeComponentProps) => {
                     </SelectContent>
                 </Select>
 
-                <Button size="icon">
-                    <StepBackIcon onClick={() => stepWeek(false)}/>
+                <Button size="icon" onClick={() => stepWeek(false)}>
+                    <StepBackIcon/>
                 </Button>
 
-                <Button size="icon">
-                    <StepForwardIcon onClick={() => stepWeek(true)}/>
+                <Button size="icon" onClick={() => stepWeek(true)}>
+                    <StepForwardIcon/>
                 </Button>
 
                 <Button onClick={setToday}>Today</Button>
