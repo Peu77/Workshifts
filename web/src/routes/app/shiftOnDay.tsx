@@ -62,6 +62,12 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
         return userList.data.filter(user => !shiftDay.users.some(u => u.id === user.id))
     }, [userList, shiftDay])
 
+    const shiftTitle = useMemo(() => {
+        if (shiftDay.shift.wholeDay) return shiftDay.shift.name
+
+        return `${shiftDay.shift.name} ${getFormatedTime(shiftDay.shift.startTime)} - ${getFormatedTime(shiftDay.shift.endTime)}`
+    }, [shiftDay])
+
     return (
         <div className="flex">
             {isMeIncluded && <div className="w-[10px] bg-green-400 rounded-l-lg"/>}
@@ -71,7 +77,7 @@ export default ({shiftDay, isAdmin, date}: ShiftDayProps) => {
                     onClick={() => deleteShiftFromDayMutation.mutate(shiftDay.id)}
                     className="absolute right-[-0] top-[-0] cursor-pointer hover:text-red-300"/>}
 
-                <h3>{shiftDay.shift.name} {getFormatedTime(shiftDay.shift.startTime)} - {getFormatedTime(shiftDay.shift.endTime)}</h3>
+                <h3>{shiftTitle}</h3>
                 <div className="flex flex-wrap gap-4 mt-2">
                     {shiftDay.users.map(user => <div
                         className={`flex gap-2 items-center p-1 rounded-lg`}
