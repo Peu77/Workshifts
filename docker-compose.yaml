@@ -1,4 +1,13 @@
 services:
+  frontend:
+    container_name: frontend
+    image: ghcr.io/peu77/workshifts_frontend:latest
+    environment:
+      - VITE_API_HOST=http=//192.168.101.81:5000
+    expose:
+      - 4000
+    ports:
+      - 4000:4000
   postgres:
     image: postgres:16-alpine
     ports:

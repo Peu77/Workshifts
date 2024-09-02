@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios, {AxiosInstance} from 'axios';
 
 // @ts-ignore
-const API_HOST = import.meta.env.VITE_API_HOST;
+const API_HOST = import.meta.env.VITE_API_HOST || "api";
 const dateKeyRx = /date/i;
-const api = axios.create({
+const api: AxiosInstance = axios.create({
     baseURL: API_HOST,
     transformResponse: (data) =>
         JSON.parse(data, (key, value) =>
