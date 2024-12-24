@@ -11,7 +11,7 @@ interface Holiday {
 
 export function useGetHolidays(year: number) {
     return useQuery<Holiday[]>({
-        queryKey: [KEY],
+        queryKey: [KEY, year],
         queryFn: async () => {
             const response = await api.get<Holiday[]>(`/holiday/${year}`)
             return response.data

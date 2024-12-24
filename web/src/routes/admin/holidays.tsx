@@ -1,28 +1,24 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {DialogContext} from "@/provider/DialogProvider.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {CreateHoliday} from "@/routes/admin/dialog/createHoliday.tsx";
 import {useDeleteHoliday, useGetHolidays} from "@/routes/admin/holidayApi.tsx";
 import {TrashIcon} from "lucide-react";
 import {toast} from "@/components/ui/use-toast.ts";
+import {Input} from "@/components/ui/input.tsx";
 
 export default () => {
-    const {data, isLoading, isError} = useGetHolidays(new Date().getFullYear())
+    const [year, setYear] = useState(new Date().getFullYear())
+    const {data} = useGetHolidays(year)
     const {setDialog} = useContext(DialogContext)
     const deleteHolidayMutation = useDeleteHoliday()
 
-    if (isLoading) {
-        return <p>Loading...</p>
-    }
-
-    if (isError) {
-        return <p>Error</p>
-    }
 
     return (
         <div>
             <Button onClick={() => setDialog(<CreateHoliday/>)}>Create Holiday</Button>
+            <Input className="mt-2 mb-2 max-w-40" type="number" value={year} onChange={e => setYear(parseInt(e.target.value))}/>
             <Table>
                 <TableHeader>
                     <TableRow>
