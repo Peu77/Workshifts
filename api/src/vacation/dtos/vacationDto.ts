@@ -1,4 +1,4 @@
-import {IsDateString, IsNotEmpty, IsString} from "class-validator";
+import {IsDate, IsDateString, IsNotEmpty, IsNumber, IsString} from "class-validator";
 
 export class VacationDto {
 
@@ -6,9 +6,9 @@ export class VacationDto {
     @IsNotEmpty()
     description: string;
 
-    @IsDateString()
-    startDate: Date
+    @IsNumber()
+    startDate: number
 
-    @IsDateString()
-    endDate: Date
+    @IsNumber()
+    endDate: number
 }

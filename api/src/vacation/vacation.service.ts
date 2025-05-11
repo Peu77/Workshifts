@@ -10,8 +10,13 @@ export class VacationService {
     ) {
     }
 
-    async createVacation(userId: number, description: string, startDate: Date, endDate: Date) {
-        const vacation = this.vacationRepository.create({user: {id: userId}, description, startDate, endDate});
+    async createVacation(userId: number, description: string, startDate: number, endDate: number) {
+        const vacation = this.vacationRepository.create({
+            user: {id: userId},
+            description,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate)
+        });
         return await this.vacationRepository.save(vacation);
     }
 

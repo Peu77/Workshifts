@@ -32,7 +32,11 @@ export function useCreateVacation() {
     return useMutation({
         mutationKey: ['createVacation'],
         mutationFn: async (dto: CreateVacationDto) => {
-            const response = await api.post<Vacation>('/vacation', dto);
+            const response = await api.post<Vacation>('/vacation', {
+                description: dto.description,
+                startDate: dto.startDate.getTime(),
+                endDate: dto.endDate.getTime()
+            });
             return response.data;
 
         },
